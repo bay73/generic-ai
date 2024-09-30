@@ -1,6 +1,7 @@
 package com.bay.aiclient.api.mistral
 
 import com.bay.aiclient.AiClient
+import com.bay.aiclient.api.ai21.Ai21HttpChatMessage
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.utils.AiHttpClient
 import io.ktor.client.plugins.logging.LogLevel
@@ -33,11 +34,11 @@ class MistralClient(
 
     suspend fun generateText(request: MistralGenerateTextRequest): Result<MistralGenerateTextResponse> {
         val historyMessages = request.chatHistory?.map { MistralHttpChatMessage(it.role, it.content) } ?: emptyList()
-        val newMessages =
-            listOf(
-                MistralHttpChatMessage(role = "system", request.systemInstructions),
-                MistralHttpChatMessage(role = "user", request.prompt),
-            )
+        val newMessages = mutableListOf<MistralHttpChatMessage>();
+        if (request.systemInstructions?.isNotBlank()==true) {
+            newMessages.add(MistralHttpChatMessage(role = "system", request.systemInstructions))
+        }
+        newMessages.add(MistralHttpChatMessage(role = "user", request.prompt))
         val httpRequest =
             MistralHttpChatRequest(
                 model = request.model,

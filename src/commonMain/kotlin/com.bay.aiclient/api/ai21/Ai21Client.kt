@@ -22,11 +22,11 @@ class Ai21Client(
 
     suspend fun generateText(request: Ai21GenerateTextRequest): Result<Ai21GenerateTextResponse> {
         val historyMessages = request.chatHistory?.map { Ai21HttpChatMessage(it.role, it.content) } ?: emptyList()
-        val newMessages =
-            listOf(
-                Ai21HttpChatMessage(role = "system", request.systemInstructions),
-                Ai21HttpChatMessage(role = "user", request.prompt),
-            )
+        val newMessages = mutableListOf<Ai21HttpChatMessage>();
+        if (request.systemInstructions?.isNotBlank()==true) {
+            newMessages.add(Ai21HttpChatMessage(role = "system", request.systemInstructions))
+        }
+        newMessages.add(Ai21HttpChatMessage(role = "user", request.prompt))
         val httpRequest =
             Ai21HttpChatRequest(
                 model = request.model,

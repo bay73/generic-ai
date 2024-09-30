@@ -1,6 +1,7 @@
 package com.bay.aiclient.api.openai
 
 import com.bay.aiclient.AiClient
+import com.bay.aiclient.api.mistral.MistralHttpChatMessage
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.utils.AiHttpClient
 import io.ktor.client.plugins.logging.LogLevel
@@ -25,11 +26,12 @@ class OpenAiClient(
 
     suspend fun generateText(request: OpenAiGenerateTextRequest): Result<OpenAiGenerateTextResponse> {
         val historyMessages = request.chatHistory?.map { OpenAiHttpChatMessage(it.role, it.content) } ?: emptyList()
-        val newMessages =
-            listOf(
-                OpenAiHttpChatMessage(role = "system", request.systemInstructions),
-                OpenAiHttpChatMessage(role = "user", request.prompt),
-            )
+        val newMessages = mutableListOf<OpenAiHttpChatMessage>();
+        if (request.systemInstructions?.isNotBlank()==true) {
+            newMessages.add(OpenAiHttpChatMessage(role = "system", request.systemInstructions))
+        }
+        newMessages.add(OpenAiHttpChatMessage(role = "user", request.prompt))
+
         val httpRequest =
             OpenAiHttpChatRequest(
                 model = request.model,
