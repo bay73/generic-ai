@@ -1,0 +1,82 @@
+package com.bay.aiclient.api.cohere
+
+import com.bay.aiclient.AiClient
+import com.bay.aiclient.domain.GenerateTextRequest
+import com.bay.aiclient.utils.AiHttpClient
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.http.HttpHeaders
+
+class CohereClient(
+    apiAky: String,
+    override var defaultModel: String? = null,
+    override var defaultTemperature: Double? = null,
+    httpLogLevel: LogLevel = LogLevel.NONE,
+) : AiClient() {
+    override suspend fun models(): Result<CohereModelsResponse> =
+        client.runGet("/v1/models?page_size=1000") { result: CohereHttpModelsResponse ->
+            CohereModelsResponse(result.models?.map { model -> CohereModel(id = model.name ?: "", name = model.name ?: "") } ?: emptyList())
+        }
+
+    override suspend fun generateText(request: GenerateTextRequest): Result<CohereGenerateTextResponse> =
+        generateText(request.toCohereRequest())
+
+    suspend fun generateText(request: CohereGenerateTextRequest): Result<CohereGenerateTextResponse> {
+        val historyMessages = request.chatHistory?.map { CohereHttpChatMessage(it.role, it.content) } ?: emptyList()
+        val httpRequest =
+            CohereHttpChatRequest(
+                message = request.prompt,
+                model = request.model,
+                preamble = request.systemInstructions,
+                chat_history = historyMessages,
+                max_tokens = request.maxOutputTokens,
+                temperature = request.temperature,
+                max_input_tokens = request.maxInputTokens,
+                k = request.topK,
+                p = request.topP,
+                seed = request.seed,
+                stop_sequences = request.stopSequences,
+                frequency_penalty = request.frequencyPenalty,
+                presence_penalty = request.presencePenalty,
+            )
+        return client.runPost("/v1/chat/", httpRequest) { result: CohereHttpChatResponse ->
+            CohereGenerateTextResponse(
+                response = result.text,
+                usage =
+                    CohereGenerateTextTokenUsage(
+                        inputToken = result.meta?.tokens?.input_tokens,
+                        outputToken = result.meta?.tokens?.output_tokens,
+                        totalToken = (result.meta?.tokens?.input_tokens ?: 0) + (result.meta?.tokens?.output_tokens ?: 0),
+                    ),
+            )
+        }
+    }
+
+    override suspend fun generateText(configuration: GenerateTextRequest.Builder.() -> Unit): Result<CohereGenerateTextResponse> {
+        val builder = textGenerationRequestBuilder()
+        configuration.invoke(builder)
+        return generateText(builder.build())
+    }
+
+    override fun textGenerationRequestBuilder(): CohereGenerateTextRequest.Builder {
+        val builder = CohereGenerateTextRequest.Builder(temperature = defaultTemperature)
+        defaultModel?.also { builder.model = it }
+        return builder
+    }
+
+    private fun GenerateTextRequest.toCohereRequest(): CohereGenerateTextRequest =
+        textGenerationRequestBuilder().also { builder -> this.copyTo(builder) }.build()
+
+    class Builder(
+        override var apiAky: String = "",
+        override var defaultModel: String? = null,
+        override var defaultTemperature: Double? = null,
+        override var httpLogLevel: LogLevel = LogLevel.NONE,
+    ) : AiClient.Builder<CohereClient>() {
+        override fun build(): CohereClient = CohereClient(apiAky, defaultModel, defaultTemperature, httpLogLevel)
+    }
+
+    private val client =
+        AiHttpClient("https://api.cohere.com", httpLogLevel) {
+            append(HttpHeaders.Authorization, "Bearer $apiAky")
+        }
+}
