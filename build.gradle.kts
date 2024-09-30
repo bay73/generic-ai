@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 group = "com.bay"
-version = "0.1.0"
+version = "0.2.0"
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -57,6 +57,7 @@ kotlin {
             implementation(libs.slf4j)
             implementation(libs.aws.bedrock)
             implementation(libs.aws.bedrockruntime)
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.9.0")
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
