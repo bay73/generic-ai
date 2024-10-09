@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
-group = "com.bay"
+group = "io.github.bay73"
 version = "0.2.1"
 
 plugins {
@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.spotless)
     `maven-publish`
+    alias(libs.plugins.vanniktech.maven.publish)
 }
 
 kotlin {
@@ -81,7 +82,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.bay.genericai"
+    namespace = "io.github.bay73.genericai"
     compileSdk =
         libs.versions.android.compileSdk
             .get()
