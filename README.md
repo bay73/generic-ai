@@ -2,7 +2,13 @@
 
 [![License](https://img.shields.io/github/license/bay73/generic-ai?color=red)](LICENSE)
 
-Easy-to-use generic Kotlin API client for connecting to various AI providers with multiplatform support.
+Easy-to-use generic Kotlin API client for connecting to various AI providers with multiplatform support. Supported AI providers:
+- [AI21 Lab](https://www.ai21.com/)
+- [AWS Bedrock](https://docs.aws.amazon.com/bedrock/)
+- [Cohere](https://docs.cohere.com/)
+- [Google Gemini](https://ai.google.dev/gemini-api/docs)
+- [Mistral](https://docs.mistral.ai/)
+- [OpenAI](https://platform.openai.com/docs/overview)
 
 ## 🛠️ Setup
 
@@ -18,9 +24,11 @@ dependencies {
 }
 ```
 
+Generic-AI uses ktor library to work with http requests so you need to include ktor client corresponding to your platform.
+
 ### Multiplatform
 
-In multiplatform projects, include the generic-AI client dependency in `commonMain` and select a [specific engine](https://ktor.io/docs/http-client-engines.html) for each target.
+In multiplatform projects, include the generic-AI client dependency in `commonMain` and select a [specific ktor engine](https://ktor.io/docs/http-client-engines.html) for each target.
 
 ## 🚀 Basic usage
 
@@ -37,6 +45,10 @@ fun getResponse() {
     val job = client.generateText { prompt = "When the first LLM was created?" }
     // Wait for execution and get response.
     println(job.await().getOrThrow().response)
+    
+    // Get list of available models
+    val models = client.models()
+    models.models.forEach { println(it.id) }  
 }
 
 ```
@@ -71,6 +83,60 @@ getResponse main() throws ExecutionException, InterruptedException {
     }
 }
 
+```
+## 🔧 Generic settings
+There are set of generic settings which can be used for any AI provider to customize model behavior for a specific request.
+
+```kotlin
+fun customizeRequest() {
+    val response = cleint.generateText {
+        model = "model_id" // Model id to use for a specific request.
+        systemInstructions = "" // Additional system instruction to adjust AI behavior.
+        chatHistory = listOf() // A list of chat messages in chronological order, representing a conversation between the user and the model.
+        maxOutputTokens = 100 // The maximum number of tokens that can be generated as part of the response.
+        stopSequences = listOf() // A list of strings that the model uses to stop generation.
+        temperature = 0.1 // A non-negative float that tunes the degree of randomness in generation. Lower temperatures mean less random generations.
+        topP = 0.5 // An alternative way controlling the diversity of the model's responses. It's recommended to use either temperature or topP.
+    }
+}
+```
+
+## ⚙️ Provider specific settings
+
+### Additonal generation parameters
+
+Some AI providers have additional settings which can be adjusted. To use this you need to request client of specific class: 
+```kotlin
+fun getResponseWithSpecificParameters() {
+    // Create a client for specified AI provider.
+    val client = AiClient.get(CohereClient::class) { // Choose provider
+        apiAky = "put your API key here"
+        defaultModel = "command-r"    // Choose model
+    }
+    // Start request to the AI model.
+    val response = client.generateText { 
+        prompt = "When the first LLM was created?"
+        seed = 5  // see provider documentation for usage of specific parameters 
+        frequencyPenalty = 0.1
+    }
+}
+
+```
+
+### AWS Bedrock authentication 
+
+AWS bedrock doesn't support token based authentication. To use it you need to provide special credentials object to the client constructor:
+```kotlin
+fun getBedrockClient() {
+    // You can use either [DefaultCredentialsProvider](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-chain.html) or specify accesskey and token directly.
+    val credentials = BedrockClient.Credentials("region", true)
+    // or 
+    val credentials = BedrockClient.Credentials("region", false, "accessKeyId", "secretAccessKey", "sessionToken ")
+    
+    // Create a client using the credentials provider
+    val client = BedrockClient.Builder(creadentals).build()
+}
+    
 ```
 
 ## 💡 Sample application
