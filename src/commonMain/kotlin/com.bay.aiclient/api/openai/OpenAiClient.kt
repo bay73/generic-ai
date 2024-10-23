@@ -1,16 +1,18 @@
 package com.bay.aiclient.api.openai
 
 import com.bay.aiclient.AiClient
-import com.bay.aiclient.api.mistral.MistralHttpChatMessage
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.utils.AiHttpClient
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.http.HttpHeaders
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class OpenAiClient(
     apiAky: String,
     override var defaultModel: String? = null,
     override var defaultTemperature: Double? = null,
+    override var timeout: Duration = 60.seconds,
     httpLogLevel: LogLevel = LogLevel.NONE,
 ) : AiClient() {
     override suspend fun models(): Result<OpenAiModelsResponse> =
@@ -26,8 +28,8 @@ class OpenAiClient(
 
     suspend fun generateText(request: OpenAiGenerateTextRequest): Result<OpenAiGenerateTextResponse> {
         val historyMessages = request.chatHistory?.map { OpenAiHttpChatMessage(it.role, it.content) } ?: emptyList()
-        val newMessages = mutableListOf<OpenAiHttpChatMessage>();
-        if (request.systemInstructions?.isNotBlank()==true) {
+        val newMessages = mutableListOf<OpenAiHttpChatMessage>()
+        if (request.systemInstructions?.isNotBlank() == true) {
             newMessages.add(OpenAiHttpChatMessage(role = "system", request.systemInstructions))
         }
         newMessages.add(OpenAiHttpChatMessage(role = "user", request.prompt))
@@ -84,13 +86,14 @@ class OpenAiClient(
         override var apiAky: String = "",
         override var defaultModel: String? = null,
         override var defaultTemperature: Double? = null,
+        override var timeout: Duration = 60.seconds,
         override var httpLogLevel: LogLevel = LogLevel.NONE,
     ) : AiClient.Builder<OpenAiClient>() {
-        override fun build(): OpenAiClient = OpenAiClient(apiAky, defaultModel, defaultTemperature, httpLogLevel)
+        override fun build(): OpenAiClient = OpenAiClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel)
     }
 
     private val client =
-        AiHttpClient("https://api.openai.com/", httpLogLevel) {
+        AiHttpClient("https://api.openai.com/", timeout, httpLogLevel) {
             append(HttpHeaders.Authorization, "Bearer $apiAky")
         }
 }

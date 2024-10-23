@@ -1,16 +1,18 @@
 package com.bay.aiclient.api.mistral
 
 import com.bay.aiclient.AiClient
-import com.bay.aiclient.api.ai21.Ai21HttpChatMessage
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.utils.AiHttpClient
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.http.HttpHeaders
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class MistralClient(
     apiAky: String,
     override var defaultModel: String? = null,
     override var defaultTemperature: Double? = null,
+    override var timeout: Duration = 60.seconds,
     httpLogLevel: LogLevel = LogLevel.NONE,
 ) : AiClient() {
     override suspend fun models(): Result<MistralModelsResponse> =
@@ -34,8 +36,8 @@ class MistralClient(
 
     suspend fun generateText(request: MistralGenerateTextRequest): Result<MistralGenerateTextResponse> {
         val historyMessages = request.chatHistory?.map { MistralHttpChatMessage(it.role, it.content) } ?: emptyList()
-        val newMessages = mutableListOf<MistralHttpChatMessage>();
-        if (request.systemInstructions?.isNotBlank()==true) {
+        val newMessages = mutableListOf<MistralHttpChatMessage>()
+        if (request.systemInstructions?.isNotBlank() == true) {
             newMessages.add(MistralHttpChatMessage(role = "system", request.systemInstructions))
         }
         newMessages.add(MistralHttpChatMessage(role = "user", request.prompt))
@@ -91,13 +93,14 @@ class MistralClient(
         override var apiAky: String = "",
         override var defaultModel: String? = null,
         override var defaultTemperature: Double? = null,
+        override var timeout: Duration = 60.seconds,
         override var httpLogLevel: LogLevel = LogLevel.NONE,
     ) : AiClient.Builder<MistralClient>() {
-        override fun build(): MistralClient = MistralClient(apiAky, defaultModel, defaultTemperature, httpLogLevel)
+        override fun build(): MistralClient = MistralClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel)
     }
 
     private val client =
-        AiHttpClient("https://api.mistral.ai", httpLogLevel) {
+        AiHttpClient("https://api.mistral.ai", timeout, httpLogLevel) {
             append(HttpHeaders.Authorization, "Bearer $apiAky")
         }
 }

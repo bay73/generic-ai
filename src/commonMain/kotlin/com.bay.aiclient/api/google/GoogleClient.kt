@@ -5,11 +5,14 @@ import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.domain.TextMessage
 import com.bay.aiclient.utils.AiHttpClient
 import io.ktor.client.plugins.logging.LogLevel
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class GoogleClient(
     apiAky: String,
     override var defaultModel: String? = null,
     override var defaultTemperature: Double? = null,
+    override var timeout: Duration = 60.seconds,
     httpLogLevel: LogLevel = LogLevel.NONE,
 ) : AiClient() {
     override suspend fun models(): Result<GoogleModelsResponse> =
@@ -90,13 +93,14 @@ class GoogleClient(
         override var apiAky: String = "",
         override var defaultModel: String? = null,
         override var defaultTemperature: Double? = null,
+        override var timeout: Duration = 60.seconds,
         override var httpLogLevel: LogLevel = LogLevel.NONE,
     ) : AiClient.Builder<GoogleClient>() {
-        override fun build(): GoogleClient = GoogleClient(apiAky, defaultModel, defaultTemperature, httpLogLevel)
+        override fun build(): GoogleClient = GoogleClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel)
     }
 
     private val client =
-        AiHttpClient("https://generativelanguage.googleapis.com/", httpLogLevel) {
+        AiHttpClient("https://generativelanguage.googleapis.com/", timeout, httpLogLevel) {
             append("x-goog-api-key", apiAky)
         }
 }

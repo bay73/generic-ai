@@ -5,11 +5,14 @@ import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.utils.AiHttpClient
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.http.HttpHeaders
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class CohereClient(
     apiAky: String,
     override var defaultModel: String? = null,
     override var defaultTemperature: Double? = null,
+    override var timeout: Duration = 60.seconds,
     httpLogLevel: LogLevel = LogLevel.NONE,
 ) : AiClient() {
     override suspend fun models(): Result<CohereModelsResponse> =
@@ -70,13 +73,14 @@ class CohereClient(
         override var apiAky: String = "",
         override var defaultModel: String? = null,
         override var defaultTemperature: Double? = null,
+        override var timeout: Duration = 60.seconds,
         override var httpLogLevel: LogLevel = LogLevel.NONE,
     ) : AiClient.Builder<CohereClient>() {
-        override fun build(): CohereClient = CohereClient(apiAky, defaultModel, defaultTemperature, httpLogLevel)
+        override fun build(): CohereClient = CohereClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel)
     }
 
     private val client =
-        AiHttpClient("https://api.cohere.com", httpLogLevel) {
+        AiHttpClient("https://api.cohere.com", timeout, httpLogLevel) {
             append(HttpHeaders.Authorization, "Bearer $apiAky")
         }
 }

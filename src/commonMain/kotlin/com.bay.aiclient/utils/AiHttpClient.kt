@@ -18,9 +18,11 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import kotlin.time.Duration
 
 class AiHttpClient(
     baseUrl: String,
+    timeout: Duration,
     logLevel: LogLevel = LogLevel.NONE,
     authHeader: HeadersBuilder.() -> Unit,
 ) {
@@ -74,8 +76,8 @@ class AiHttpClient(
                 sanitizeHeader { header -> header == HttpHeaders.Authorization || header == "x-goog-api-key" }
             }
             install(HttpTimeout) {
-                requestTimeoutMillis = TIMEOUT
-                socketTimeoutMillis = TIMEOUT
+                requestTimeoutMillis = timeout.inWholeMilliseconds
+                socketTimeoutMillis = timeout.inWholeMilliseconds
             }
             install(ContentNegotiation) {
                 json(
@@ -86,8 +88,4 @@ class AiHttpClient(
                 )
             }
         }
-
-    private companion object {
-        const val TIMEOUT = 60_000L
-    }
 }

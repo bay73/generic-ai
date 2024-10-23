@@ -5,11 +5,14 @@ import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.utils.AiHttpClient
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.http.HttpHeaders
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class Ai21Client(
     apiAky: String,
     override var defaultModel: String? = null,
     override var defaultTemperature: Double? = null,
+    override var timeout: Duration = 60.seconds,
     httpLogLevel: LogLevel = LogLevel.NONE,
 ) : AiClient() {
     override suspend fun models(): Result<Ai21ModelsResponse> =
@@ -22,8 +25,8 @@ class Ai21Client(
 
     suspend fun generateText(request: Ai21GenerateTextRequest): Result<Ai21GenerateTextResponse> {
         val historyMessages = request.chatHistory?.map { Ai21HttpChatMessage(it.role, it.content) } ?: emptyList()
-        val newMessages = mutableListOf<Ai21HttpChatMessage>();
-        if (request.systemInstructions?.isNotBlank()==true) {
+        val newMessages = mutableListOf<Ai21HttpChatMessage>()
+        if (request.systemInstructions?.isNotBlank() == true) {
             newMessages.add(Ai21HttpChatMessage(role = "system", request.systemInstructions))
         }
         newMessages.add(Ai21HttpChatMessage(role = "user", request.prompt))
@@ -79,13 +82,14 @@ class Ai21Client(
         override var apiAky: String = "",
         override var defaultModel: String? = null,
         override var defaultTemperature: Double? = null,
+        override var timeout: Duration = 60.seconds,
         override var httpLogLevel: LogLevel = LogLevel.NONE,
     ) : AiClient.Builder<Ai21Client>() {
-        override fun build(): Ai21Client = Ai21Client(apiAky, defaultModel, defaultTemperature, httpLogLevel)
+        override fun build(): Ai21Client = Ai21Client(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel)
     }
 
     private val client =
-        AiHttpClient("https://api.ai21.com", httpLogLevel) {
+        AiHttpClient("https://api.ai21.com", timeout, httpLogLevel) {
             append(HttpHeaders.Authorization, "Bearer $apiAky")
         }
 }

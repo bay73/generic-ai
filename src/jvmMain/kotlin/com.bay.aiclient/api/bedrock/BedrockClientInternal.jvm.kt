@@ -13,9 +13,12 @@ import software.amazon.awssdk.services.bedrockruntime.model.ConverseRequest
 import software.amazon.awssdk.services.bedrockruntime.model.InferenceConfiguration
 import software.amazon.awssdk.services.bedrockruntime.model.Message
 import software.amazon.awssdk.services.bedrockruntime.model.SystemContentBlock
+import kotlin.time.Duration
+import kotlin.time.toJavaDuration
 
 actual class BedrockClientInternal actual constructor(
     credentials: com.bay.aiclient.api.bedrock.BedrockClient.Credentials,
+    timeout: Duration,
 ) {
     private val region = Region.of(credentials.region)
 
@@ -38,14 +41,18 @@ actual class BedrockClientInternal actual constructor(
             .builder()
             .credentialsProvider(credentialsProvider)
             .region(region)
-            .build()
+            .overrideConfiguration {
+                it.apiCallTimeout(timeout.toJavaDuration())
+            }.build()
 
     private val bedrockRuntimeClient =
         BedrockRuntimeClient
             .builder()
             .credentialsProvider(credentialsProvider)
             .region(region)
-            .build()
+            .overrideConfiguration {
+                it.apiCallTimeout(timeout.toJavaDuration())
+            }.build()
 
     actual suspend fun models(): BedrockModelsResponse {
         val modelsResponse = bedrockClient.listFoundationModels(ListFoundationModelsRequest.builder().build())
