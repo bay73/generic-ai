@@ -2,7 +2,7 @@
 - added setting custom http timeout for created client
 
 ## 0.2.1
-> Published 30 Sep 2024
+> Published 09 Oct 2024
 - Fix errors with empty system instructions
 
 ## 0.2.0

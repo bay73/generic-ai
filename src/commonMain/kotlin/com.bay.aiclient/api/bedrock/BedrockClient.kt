@@ -50,7 +50,7 @@ class BedrockClient(
             }
     }
 
-    private val internalClient: BedrockClientInternal = BedrockClientInternal(credentials)
+    private val internalClient: BedrockClientInternal = BedrockClientInternal(credentials, timeout)
 
     data class Credentials(
         val region: String = "eu-central-1",
