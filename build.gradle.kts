@@ -55,10 +55,10 @@ kotlin {
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.kotlinx.coroutines)
             implementation(libs.slf4j)
             implementation(libs.aws.bedrock)
             implementation(libs.aws.bedrockruntime)
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.9.0")
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
