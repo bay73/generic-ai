@@ -1,4 +1,8 @@
+## 0.3.1
+- update ktor to 3.0
+
 ## 0.3.0
+> Published 23 Oct 2024
 - added setting custom http timeout for created client
 
 ## 0.2.1
