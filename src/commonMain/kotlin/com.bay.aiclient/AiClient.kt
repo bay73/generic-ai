@@ -6,6 +6,7 @@ import com.bay.aiclient.api.cohere.CohereClient
 import com.bay.aiclient.api.google.GoogleClient
 import com.bay.aiclient.api.mistral.MistralClient
 import com.bay.aiclient.api.openai.OpenAiClient
+import com.bay.aiclient.api.sambanova.SambaNovaClient
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.domain.GenerateTextResponse
 import com.bay.aiclient.domain.ModelsResponse
@@ -52,6 +53,7 @@ abstract class AiClient(
                 Ai21Client::class -> Ai21Client.Builder() as Builder<T>
                 GoogleClient::class -> GoogleClient.Builder() as Builder<T>
                 BedrockClient::class -> BedrockClient.Builder() as Builder<T>
+                SambaNovaClient::class -> SambaNovaClient.Builder() as Builder<T>
                 else -> throw IllegalArgumentException("Unsupported AIClient implementation!")
             }
 
@@ -76,5 +78,6 @@ abstract class AiClient(
         MISTRAL(MistralClient::class),
         AI21(Ai21Client::class),
         COHERE(CohereClient::class),
+        SAMBA_NOVA(SambaNovaClient::class),
     }
 }
