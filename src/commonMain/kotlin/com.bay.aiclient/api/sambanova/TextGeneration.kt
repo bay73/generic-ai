@@ -73,7 +73,6 @@ data class SambaNovaChatMessage(
 
 @Serializable
 data class SambaNovaChatResponseChoice(
-    val finish_reason: String? = null,
     val index: Int? = null,
     val message: SambaNovaChatMessage? = null,
 )

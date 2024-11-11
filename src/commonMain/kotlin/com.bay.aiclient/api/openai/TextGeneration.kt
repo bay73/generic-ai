@@ -70,7 +70,7 @@ data class OpenAiChatMessage(
 
 @Serializable
 data class OpenAiChatResponseChoice(
-    val finish_reason: String? = null,
+    val finishReason: String? = null,
     val index: Int? = null,
     val message: OpenAiChatMessage? = null,
 )

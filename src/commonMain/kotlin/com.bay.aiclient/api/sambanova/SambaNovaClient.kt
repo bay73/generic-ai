@@ -66,7 +66,6 @@ class SambaNovaClient(
                 choices =
                     result.choices?.map {
                         SambaNovaChatResponseChoice(
-                            finish_reason = it.finish_reason,
                             index = it.index,
                             SambaNovaChatMessage(role = it.message?.role, content = it.message?.content),
                         )

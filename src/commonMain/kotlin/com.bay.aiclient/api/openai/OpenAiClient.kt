@@ -58,7 +58,7 @@ class OpenAiClient(
                 choices =
                     result.choices?.map {
                         OpenAiChatResponseChoice(
-                            finish_reason = it.finish_reason,
+                            finishReason = it.finish_reason,
                             index = it.index,
                             OpenAiChatMessage(role = it.message?.role, content = it.message?.content),
                         )

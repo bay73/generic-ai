@@ -70,7 +70,7 @@ data class MistralChatMessage(
 
 @Serializable
 data class MistralChatResponseChoice(
-    val finish_reason: String? = null,
+    val finishReason: String? = null,
     val index: Int? = null,
     val message: MistralChatMessage? = null,
 )

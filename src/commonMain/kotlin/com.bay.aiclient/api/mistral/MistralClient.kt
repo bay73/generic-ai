@@ -65,7 +65,7 @@ class MistralClient(
                 choices =
                     result.choices?.map {
                         MistralChatResponseChoice(
-                            finish_reason = it.finish_reason,
+                            finishReason = it.finish_reason,
                             index = it.index,
                             MistralChatMessage(role = it.message?.role, content = it.message?.content),
                         )
