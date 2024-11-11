@@ -1,4 +1,5 @@
 ## 0.4.2
+> Published 11 Nov 2024
 - add support for Together AI
 
 ## 0.4.1
