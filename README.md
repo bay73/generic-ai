@@ -9,7 +9,7 @@ Easy-to-use generic Kotlin API client for connecting to various AI providers wit
 - [Google Gemini](https://ai.google.dev/gemini-api/docs)
 - [Mistral](https://docs.mistral.ai/)
 - [OpenAI](https://platform.openai.com/docs/overview)
-- [SmabaNova] (https://community.sambanova.ai/docs)
+- [SambaNova](https://community.sambanova.ai/docs)
 
 ## 🛠️ Setup
 
