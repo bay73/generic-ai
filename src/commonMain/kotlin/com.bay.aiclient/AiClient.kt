@@ -1,6 +1,7 @@
 package com.bay.aiclient
 
 import com.bay.aiclient.api.ai21.Ai21Client
+import com.bay.aiclient.api.anthropic.AnthropicClient
 import com.bay.aiclient.api.bedrock.BedrockClient
 import com.bay.aiclient.api.cohere.CohereClient
 import com.bay.aiclient.api.google.GoogleClient
@@ -47,12 +48,13 @@ abstract class AiClient(
         @Suppress("UNCHECKED_CAST")
         fun <T : AiClient> getBuilder(clientClass: KClass<T>): Builder<T> =
             when (clientClass) {
-                OpenAiClient::class -> OpenAiClient.Builder() as Builder<T>
-                MistralClient::class -> MistralClient.Builder() as Builder<T>
-                CohereClient::class -> CohereClient.Builder() as Builder<T>
                 Ai21Client::class -> Ai21Client.Builder() as Builder<T>
-                GoogleClient::class -> GoogleClient.Builder() as Builder<T>
+                AnthropicClient::class -> AnthropicClient.Builder() as Builder<T>
                 BedrockClient::class -> BedrockClient.Builder() as Builder<T>
+                CohereClient::class -> CohereClient.Builder() as Builder<T>
+                GoogleClient::class -> GoogleClient.Builder() as Builder<T>
+                MistralClient::class -> MistralClient.Builder() as Builder<T>
+                OpenAiClient::class -> OpenAiClient.Builder() as Builder<T>
                 SambaNovaClient::class -> SambaNovaClient.Builder() as Builder<T>
                 else -> throw IllegalArgumentException("Unsupported AIClient implementation!")
             }
@@ -72,12 +74,13 @@ abstract class AiClient(
     enum class Type(
         val clazz: KClass<out AiClient>,
     ) {
-        OPEN_AI(OpenAiClient::class),
+        AI21(Ai21Client::class),
+        ANTHROPIC(AnthropicClient::class),
         BEDROCK(BedrockClient::class),
+        COHERE(CohereClient::class),
         GOOGLE(GoogleClient::class),
         MISTRAL(MistralClient::class),
-        AI21(Ai21Client::class),
-        COHERE(CohereClient::class),
+        OPEN_AI(OpenAiClient::class),
         SAMBA_NOVA(SambaNovaClient::class),
     }
 }

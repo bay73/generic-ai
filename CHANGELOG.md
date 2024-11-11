@@ -1,3 +1,6 @@
+## 0.4.1
+- add support for Anthropic Cloud
+
 ## 0.4.0
 - add support for SambaNova Cloud
 

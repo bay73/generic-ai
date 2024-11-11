@@ -4,6 +4,7 @@
 
 Easy-to-use generic Kotlin API client for connecting to various AI providers with multiplatform support. Supported AI providers:
 - [AI21 Lab](https://www.ai21.com/)
+- [Anthropic](https://docs.anthropic.com/en/api/getting-started)
 - [AWS Bedrock](https://docs.aws.amazon.com/bedrock/)
 - [Cohere](https://docs.cohere.com/)
 - [Google Gemini](https://ai.google.dev/gemini-api/docs)
