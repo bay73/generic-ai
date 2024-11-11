@@ -16,7 +16,7 @@ data class GoogleGenerateTextRequest(
     override val stopSequences: List<String>? = null,
     override val temperature: Double? = null,
     override val topP: Double? = null,
-    val Int: Double? = null,
+    val topK: Int? = null,
     val presencePenalty: Double? = null,
     val frequencyPenalty: Double? = null,
 ) : GenerateTextRequest() {
@@ -29,7 +29,7 @@ data class GoogleGenerateTextRequest(
         override var stopSequences: List<String>? = null,
         override var temperature: Double? = null,
         override var topP: Double? = null,
-        var Int: Double? = null,
+        var topK: Int? = null,
         var presencePenalty: Double? = null,
         var frequencyPenalty: Double? = null,
     ) : GenerateTextRequest.Builder() {

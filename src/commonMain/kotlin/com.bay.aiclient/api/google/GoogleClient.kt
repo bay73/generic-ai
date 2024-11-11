@@ -5,6 +5,7 @@ import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.domain.TextMessage
 import com.bay.aiclient.utils.AiHttpClient
 import io.ktor.client.plugins.logging.LogLevel
+import kotlin.math.max
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -38,6 +39,12 @@ class GoogleClient(
                 generationConfig =
                     GoogleHttpGenerationConfig(
                         stopSequences = request.stopSequences,
+                        maxOutputTokens = request.maxOutputTokens,
+                        temperature = request.temperature,
+                        topP = request.topP,
+                        topK = request.topK,
+                        presencePenalty = request.presencePenalty,
+                        frequencyPenalty = request.frequencyPenalty,
                     ),
             )
         return client.runPost("/v1beta/$model:generateContent", httpRequest) { result: GoogleHttpChatResponse ->
