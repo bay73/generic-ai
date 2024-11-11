@@ -16,7 +16,7 @@ data class SambaNovaGenerateTextRequest(
     override val stopSequences: List<String>? = null,
     override val temperature: Double? = null,
     override val topP: Double? = null,
-    val topK: Double? = null,
+    val topK: Int? = null,
 ) : GenerateTextRequest() {
     class Builder(
         override var prompt: String = "",
@@ -27,7 +27,7 @@ data class SambaNovaGenerateTextRequest(
         override var stopSequences: List<String>? = null,
         override var temperature: Double? = null,
         override var topP: Double? = null,
-        var topK: Double? = null,
+        var topK: Int? = null,
     ) : GenerateTextRequest.Builder() {
         override fun build(): SambaNovaGenerateTextRequest =
             model?.let {

@@ -12,7 +12,7 @@ data class CohereHttpChatRequest(
     val temperature: Double? = null,
     val max_tokens: Int? = null,
     val max_input_tokens: Int? = null,
-    val k: Double? = null,
+    val k: Int? = null,
     val p: Double? = null,
     val seed: Int? = null,
     val stop_sequences: List<String>? = null,

@@ -9,7 +9,7 @@ data class SambaNovaHttpChatRequest(
     val max_tokens: Int? = null,
     val temperature: Double? = null,
     val top_p: Double? = null,
-    val top_k: Double? = null,
+    val top_k: Int? = null,
     val stop: List<String>? = null,
 )
 
