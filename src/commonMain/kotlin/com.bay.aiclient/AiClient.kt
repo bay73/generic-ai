@@ -8,6 +8,7 @@ import com.bay.aiclient.api.google.GoogleClient
 import com.bay.aiclient.api.mistral.MistralClient
 import com.bay.aiclient.api.openai.OpenAiClient
 import com.bay.aiclient.api.sambanova.SambaNovaClient
+import com.bay.aiclient.api.togetherai.TogetherAiClient
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.domain.GenerateTextResponse
 import com.bay.aiclient.domain.ModelsResponse
@@ -56,6 +57,7 @@ abstract class AiClient(
                 MistralClient::class -> MistralClient.Builder() as Builder<T>
                 OpenAiClient::class -> OpenAiClient.Builder() as Builder<T>
                 SambaNovaClient::class -> SambaNovaClient.Builder() as Builder<T>
+                TogetherAiClient::class -> TogetherAiClient.Builder() as Builder<T>
                 else -> throw IllegalArgumentException("Unsupported AIClient implementation!")
             }
 
@@ -82,5 +84,6 @@ abstract class AiClient(
         MISTRAL(MistralClient::class),
         OPEN_AI(OpenAiClient::class),
         SAMBA_NOVA(SambaNovaClient::class),
+        TOGETHER_AI(TogetherAiClient::class),
     }
 }

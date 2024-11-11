@@ -5,7 +5,6 @@ import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.domain.TextMessage
 import com.bay.aiclient.utils.AiHttpClient
 import io.ktor.client.plugins.logging.LogLevel
-import kotlin.math.max
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 

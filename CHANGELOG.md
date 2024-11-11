@@ -1,3 +1,6 @@
+## 0.4.2
+- add support for Together AI
+
 ## 0.4.1
 - add support for Anthropic Cloud
 

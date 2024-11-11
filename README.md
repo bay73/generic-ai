@@ -11,6 +11,7 @@ Easy-to-use generic Kotlin API client for connecting to various AI providers wit
 - [Mistral](https://docs.mistral.ai/)
 - [OpenAI](https://platform.openai.com/docs/overview)
 - [SambaNova](https://community.sambanova.ai/docs)
+- [Together AI](https://docs.together.ai/docs)
 
 ## 🛠️ Setup
 
