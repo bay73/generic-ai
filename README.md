@@ -6,6 +6,7 @@ Easy-to-use generic Kotlin API client for connecting to various AI providers wit
 - [AI21 Lab](https://www.ai21.com/)
 - [Anthropic](https://docs.anthropic.com/en/api/getting-started)
 - [AWS Bedrock](https://docs.aws.amazon.com/bedrock/)
+- [Cerebras](https://inference-docs.cerebras.ai/introduction)
 - [Cohere](https://docs.cohere.com/)
 - [Google Gemini](https://ai.google.dev/gemini-api/docs)
 - [Mistral](https://docs.mistral.ai/)

@@ -3,6 +3,7 @@ package com.bay.aiclient
 import com.bay.aiclient.api.ai21.Ai21Client
 import com.bay.aiclient.api.anthropic.AnthropicClient
 import com.bay.aiclient.api.bedrock.BedrockClient
+import com.bay.aiclient.api.cerebras.CerebrasClient
 import com.bay.aiclient.api.cohere.CohereClient
 import com.bay.aiclient.api.google.GoogleClient
 import com.bay.aiclient.api.mistral.MistralClient
@@ -52,6 +53,7 @@ abstract class AiClient(
                 Ai21Client::class -> Ai21Client.Builder() as Builder<T>
                 AnthropicClient::class -> AnthropicClient.Builder() as Builder<T>
                 BedrockClient::class -> BedrockClient.Builder() as Builder<T>
+                CerebrasClient::class -> CerebrasClient.Builder() as Builder<T>
                 CohereClient::class -> CohereClient.Builder() as Builder<T>
                 GoogleClient::class -> GoogleClient.Builder() as Builder<T>
                 MistralClient::class -> MistralClient.Builder() as Builder<T>
@@ -79,6 +81,7 @@ abstract class AiClient(
         AI21(Ai21Client::class),
         ANTHROPIC(AnthropicClient::class),
         BEDROCK(BedrockClient::class),
+        CEREBRAS(CerebrasClient::class),
         COHERE(CohereClient::class),
         GOOGLE(GoogleClient::class),
         MISTRAL(MistralClient::class),

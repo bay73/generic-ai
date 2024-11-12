@@ -1,3 +1,6 @@
+## 0.4.3
+- add support for Cerebras Inference
+
 ## 0.4.2
 > Published 11 Nov 2024
 - add support for Together AI
