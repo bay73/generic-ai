@@ -11,6 +11,7 @@ data class SambaNovaHttpChatRequest(
     val top_p: Double? = null,
     val top_k: Int? = null,
     val stop: List<String>? = null,
+    val stream: Boolean? = false,
 )
 
 @Serializable

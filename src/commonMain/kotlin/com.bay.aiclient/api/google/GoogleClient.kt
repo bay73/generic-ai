@@ -38,12 +38,15 @@ class GoogleClient(
                 generationConfig =
                     GoogleHttpGenerationConfig(
                         stopSequences = request.stopSequences,
+                        responseMimeType = GoogleHttpGenerationConfig.mimeTypeFrom(request.responseFormat),
+                        responseSchema = request.responseFormat?.schema,
                         maxOutputTokens = request.maxOutputTokens,
                         temperature = request.temperature,
                         topP = request.topP,
                         topK = request.topK,
                         presencePenalty = request.presencePenalty,
                         frequencyPenalty = request.frequencyPenalty,
+                        candidateCount = request.candidateCount,
                     ),
             )
         return client.runPost("/v1beta/$model:generateContent", httpRequest) { result: GoogleHttpChatResponse ->

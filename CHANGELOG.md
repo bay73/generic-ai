@@ -1,3 +1,6 @@
+## 0.5.0
+- extend text generation request with `responseFormat` attribute
+
 ## 0.4.2
 > Published 11 Nov 2024
 - add support for Together AI

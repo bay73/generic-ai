@@ -8,6 +8,7 @@ data class AnthropicHttpChatRequest(
     val model: String? = null,
     val max_tokens: Int? = null,
     val stop_sequences: List<String>? = null,
+    val stream: Boolean? = false,
     val system: String? = null,
     val temperature: Double? = null,
     val top_k: Int? = null,

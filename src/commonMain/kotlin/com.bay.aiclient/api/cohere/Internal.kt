@@ -1,12 +1,15 @@
 package com.bay.aiclient.api.cohere
 
+import com.bay.aiclient.domain.GenerateTextRequest
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
 @Serializable
 data class CohereHttpChatRequest(
+    val model: String? = null,
     val message: String,
     val stream: Boolean = false,
-    val model: String? = null,
+    val response_format: CohereHttpChatResponseFormat? = null,
     val preamble: String? = null,
     val chat_history: List<CohereHttpChatMessage>? = null,
     val temperature: Double? = null,
@@ -25,6 +28,26 @@ data class CohereHttpChatMessage(
     val role: String? = null,
     val message: String? = null,
 )
+
+@Serializable
+data class CohereHttpChatResponseFormat(
+    val type: String?,
+    val json_schema: JsonObject? = null,
+) {
+    companion object {
+        fun from(genericResponseFormat: GenerateTextRequest.ResponseFormat?): CohereHttpChatResponseFormat? =
+            when (genericResponseFormat?.type) {
+                null -> null
+                GenerateTextRequest.ResponseFormat.Type.TEXT -> CohereHttpChatResponseFormat("text")
+                GenerateTextRequest.ResponseFormat.Type.JSON_OBJECT -> CohereHttpChatResponseFormat("json_object")
+                GenerateTextRequest.ResponseFormat.Type.JSON_SCHEMA ->
+                    CohereHttpChatResponseFormat(
+                        "json_object",
+                        genericResponseFormat.schema,
+                    )
+            }
+    }
+}
 
 @Serializable
 data class CohereHttpChatResponse(
