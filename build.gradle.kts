@@ -77,7 +77,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-git restor --staged             implementation(libs.ktor.client.mock)
+            implementation(libs.ktor.client.mock)
             implementation(libs.kotlinx.coroutines.test)
         }
     }
