@@ -77,6 +77,8 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+git restor --staged             implementation(libs.ktor.client.mock)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }
@@ -105,4 +107,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
         target("*.gradle.kts")
         ktlint()
     }
+}
+dependencies {
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 }

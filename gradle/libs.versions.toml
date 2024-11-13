@@ -14,6 +14,7 @@ android-minSdk = "24"
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
@@ -26,6 +27,7 @@ ktor-client-core-wasm = { module = "io.ktor:ktor-client-content-negotiation", ve
 ktor-client-content-negociation-wasm = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor-wasm" }
 ktor-client-resources-wasm = { module = "io.ktor:ktor-client-resources", version.ref = "ktor-wasm" }
 ktor-client-logging-wasm = { module = "io.ktor:ktor-client-logging", version.ref = "ktor-wasm" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 ktor-serialization-kotlinx-json-wasm = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor-wasm" }
 slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 aws-bedrock = { group = "software.amazon.awssdk", name = "bedrock", version.ref = "aws" }
