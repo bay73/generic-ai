@@ -112,9 +112,9 @@ actual class BedrockClientInternal actual constructor(
                     ?.text(),
             usage =
                 BedrockGenerateTextTokenUsage(
-                    inputToken = converseResponse.usage().inputTokens(),
-                    outputToken = converseResponse.usage().outputTokens(),
-                    totalToken = converseResponse.usage().totalTokens(),
+                    inputTokens = converseResponse.usage().inputTokens(),
+                    outputTokens = converseResponse.usage().outputTokens(),
+                    totalTokens = converseResponse.usage().totalTokens(),
                 ),
         )
     }

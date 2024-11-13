@@ -2,6 +2,7 @@ package com.bay.aiclient.utils
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -24,6 +25,7 @@ class AiHttpClient(
     baseUrl: String,
     timeout: Duration,
     logLevel: LogLevel = LogLevel.NONE,
+    httpEngine: HttpClientEngine? = null,
     authHeader: HeadersBuilder.() -> Unit,
 ) {
     suspend inline fun <reified Request, reified Response, reified T> runPost(
@@ -55,7 +57,7 @@ class AiHttpClient(
         }
 
     val client =
-        HttpClient {
+        HttpClient(engine = httpEngine ?: HttpClient().engine) {
             expectSuccess = true
             defaultRequest {
                 url(baseUrl)

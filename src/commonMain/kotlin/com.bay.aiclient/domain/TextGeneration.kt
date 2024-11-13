@@ -42,7 +42,7 @@ abstract class GenerateTextRequest {
                     topP,
                 )
             }
-                ?: throw IllegalStateException("Model should be set!")
+                ?: throw IllegalArgumentException("Model should be set!")
     }
 
     fun <T : Builder> copyTo(builder: T) {
@@ -77,7 +77,7 @@ abstract class GenerateTextResponse {
 
 @Serializable
 abstract class GenerateTextTokenUsage {
-    abstract val inputToken: Int?
-    abstract val outputToken: Int?
-    abstract val totalToken: Int?
+    abstract val inputTokens: Int?
+    abstract val outputTokens: Int?
+    abstract val totalTokens: Int?
 }

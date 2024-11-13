@@ -3,17 +3,19 @@ package com.bay.aiclient.api.openai
 import com.bay.aiclient.AiClient
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.utils.AiHttpClient
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.http.HttpHeaders
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class OpenAiClient(
+class OpenAiClient internal constructor(
     apiAky: String,
     override var defaultModel: String? = null,
     override var defaultTemperature: Double? = null,
     override var timeout: Duration = 60.seconds,
-    httpLogLevel: LogLevel = LogLevel.NONE,
+    override var httpLogLevel: LogLevel = LogLevel.NONE,
+    httpEngine: HttpClientEngine? = null,
 ) : AiClient() {
     override suspend fun models(): Result<OpenAiModelsResponse> =
         client.runGet("/v1/models") { result: OpenAiHttpModelsResponse ->
@@ -51,9 +53,9 @@ class OpenAiClient(
                         ?.content ?: "",
                 usage =
                     OpenAiGenerateTextTokenUsage(
-                        inputToken = result.usage?.prompt_tokens,
-                        outputToken = result.usage?.completion_tokens,
-                        totalToken = result.usage?.total_tokens,
+                        inputTokens = result.usage?.prompt_tokens,
+                        outputTokens = result.usage?.completion_tokens,
+                        totalTokens = result.usage?.total_tokens,
                     ),
                 choices =
                     result.choices?.map {
@@ -88,12 +90,13 @@ class OpenAiClient(
         override var defaultTemperature: Double? = null,
         override var timeout: Duration = 60.seconds,
         override var httpLogLevel: LogLevel = LogLevel.NONE,
+        override var httpEngine: HttpClientEngine? = null,
     ) : AiClient.Builder<OpenAiClient>() {
-        override fun build(): OpenAiClient = OpenAiClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel)
+        override fun build(): OpenAiClient = OpenAiClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel, httpEngine)
     }
 
     private val client =
-        AiHttpClient("https://api.openai.com/", timeout, httpLogLevel) {
+        AiHttpClient("https://api.openai.com/", timeout, httpLogLevel, httpEngine) {
             append(HttpHeaders.Authorization, "Bearer $apiAky")
         }
 }

@@ -6,11 +6,12 @@ import io.ktor.client.plugins.logging.LogLevel
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class BedrockClient(
+class BedrockClient internal constructor(
     val credentials: Credentials,
     override var defaultModel: String? = null,
     override var timeout: Duration = 60.seconds,
     override var defaultTemperature: Double? = null,
+    override var httpLogLevel: LogLevel = LogLevel.NONE,
 ) : AiClient() {
     override suspend fun models(): Result<BedrockModelsResponse> = kotlin.runCatching { internalClient.models() }
 
@@ -40,7 +41,6 @@ class BedrockClient(
         override var defaultModel: String? = null,
         override var defaultTemperature: Double? = null,
         override var timeout: Duration = 60.seconds,
-        override var httpLogLevel: LogLevel = LogLevel.NONE,
     ) : AiClient.Builder<BedrockClient>() {
         override fun build(): BedrockClient =
             if (apiAky.isBlank()) {

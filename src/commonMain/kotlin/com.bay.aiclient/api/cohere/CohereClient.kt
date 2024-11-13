@@ -3,17 +3,19 @@ package com.bay.aiclient.api.cohere
 import com.bay.aiclient.AiClient
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.utils.AiHttpClient
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.http.HttpHeaders
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class CohereClient(
+class CohereClient internal constructor(
     apiAky: String,
     override var defaultModel: String? = null,
     override var defaultTemperature: Double? = null,
     override var timeout: Duration = 60.seconds,
-    httpLogLevel: LogLevel = LogLevel.NONE,
+    override var httpLogLevel: LogLevel = LogLevel.NONE,
+    httpEngine: HttpClientEngine? = null,
 ) : AiClient() {
     override suspend fun models(): Result<CohereModelsResponse> =
         client.runGet("/v1/models?page_size=1000") { result: CohereHttpModelsResponse ->
@@ -46,9 +48,9 @@ class CohereClient(
                 response = result.text,
                 usage =
                     CohereGenerateTextTokenUsage(
-                        inputToken = result.meta?.tokens?.input_tokens,
-                        outputToken = result.meta?.tokens?.output_tokens,
-                        totalToken = (result.meta?.tokens?.input_tokens ?: 0) + (result.meta?.tokens?.output_tokens ?: 0),
+                        inputTokens = result.meta?.tokens?.input_tokens,
+                        outputTokens = result.meta?.tokens?.output_tokens,
+                        totalTokens = (result.meta?.tokens?.input_tokens ?: 0) + (result.meta?.tokens?.output_tokens ?: 0),
                     ),
             )
         }
@@ -75,12 +77,13 @@ class CohereClient(
         override var defaultTemperature: Double? = null,
         override var timeout: Duration = 60.seconds,
         override var httpLogLevel: LogLevel = LogLevel.NONE,
+        override var httpEngine: HttpClientEngine? = null,
     ) : AiClient.Builder<CohereClient>() {
-        override fun build(): CohereClient = CohereClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel)
+        override fun build(): CohereClient = CohereClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel, httpEngine)
     }
 
     private val client =
-        AiHttpClient("https://api.cohere.com", timeout, httpLogLevel) {
+        AiHttpClient("https://api.cohere.com", timeout, httpLogLevel, httpEngine) {
             append(HttpHeaders.Authorization, "Bearer $apiAky")
         }
 }

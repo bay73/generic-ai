@@ -3,17 +3,19 @@ package com.bay.aiclient.api.sambanova
 import com.bay.aiclient.AiClient
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.utils.AiHttpClient
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.http.HttpHeaders
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class SambaNovaClient(
+class SambaNovaClient internal constructor(
     apiAky: String,
     override var defaultModel: String? = null,
     override var defaultTemperature: Double? = null,
     override var timeout: Duration = 60.seconds,
-    httpLogLevel: LogLevel = LogLevel.NONE,
+    override var httpLogLevel: LogLevel = LogLevel.NONE,
+    httpEngine: HttpClientEngine? = null,
 ) : AiClient() {
     override suspend fun models(): Result<SambaNovaModelsResponse> =
         Result.success(
@@ -59,9 +61,9 @@ class SambaNovaClient(
                         ?.content ?: "",
                 usage =
                     SambaNovaGenerateTextTokenUsage(
-                        inputToken = result.usage?.input_tokens_count,
-                        outputToken = result.usage?.output_tokens_count,
-                        totalToken = result.usage?.total_tokens_count,
+                        inputTokens = result.usage?.input_tokens_count,
+                        outputTokens = result.usage?.output_tokens_count,
+                        totalTokens = result.usage?.total_tokens_count,
                     ),
                 choices =
                     result.choices?.map {
@@ -95,12 +97,13 @@ class SambaNovaClient(
         override var defaultTemperature: Double? = null,
         override var timeout: Duration = 60.seconds,
         override var httpLogLevel: LogLevel = LogLevel.NONE,
+        override var httpEngine: HttpClientEngine? = null,
     ) : AiClient.Builder<SambaNovaClient>() {
-        override fun build(): SambaNovaClient = SambaNovaClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel)
+        override fun build(): SambaNovaClient = SambaNovaClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel, httpEngine)
     }
 
     private val client =
-        AiHttpClient("https://api.sambanova.ai/", timeout, httpLogLevel) {
+        AiHttpClient("https://api.sambanova.ai/", timeout, httpLogLevel, httpEngine) {
             append(HttpHeaders.Authorization, "Bearer $apiAky")
         }
 }

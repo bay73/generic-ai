@@ -13,15 +13,17 @@ import com.bay.aiclient.api.togetherai.TogetherAiClient
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.domain.GenerateTextResponse
 import com.bay.aiclient.domain.ModelsResponse
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.logging.LogLevel
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-abstract class AiClient(
+abstract class AiClient internal constructor(
     open var defaultModel: String? = null,
     open var defaultTemperature: Double? = null,
     open var timeout: Duration = 60.seconds,
+    open var httpLogLevel: LogLevel = LogLevel.NONE,
 ) {
     abstract suspend fun models(): Result<ModelsResponse>
 
@@ -37,6 +39,7 @@ abstract class AiClient(
         open var defaultTemperature: Double? = null,
         open var timeout: Duration = 60.seconds,
         open var httpLogLevel: LogLevel = LogLevel.NONE,
+        open var httpEngine: HttpClientEngine? = null,
     ) {
         abstract fun build(): T
     }

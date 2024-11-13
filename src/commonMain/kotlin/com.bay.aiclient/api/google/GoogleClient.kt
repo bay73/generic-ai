@@ -4,16 +4,18 @@ import com.bay.aiclient.AiClient
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.domain.TextMessage
 import com.bay.aiclient.utils.AiHttpClient
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.logging.LogLevel
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class GoogleClient(
+class GoogleClient internal constructor(
     apiAky: String,
     override var defaultModel: String? = null,
     override var defaultTemperature: Double? = null,
     override var timeout: Duration = 60.seconds,
-    httpLogLevel: LogLevel = LogLevel.NONE,
+    override var httpLogLevel: LogLevel = LogLevel.NONE,
+    httpEngine: HttpClientEngine? = null,
 ) : AiClient() {
     override suspend fun models(): Result<GoogleModelsResponse> =
         client.runGet("/v1beta/models") { result: GoogleHttpModelsResponse ->
@@ -57,9 +59,9 @@ class GoogleClient(
                         ?.text ?: "",
                 usage =
                     GoogleGenerateTextTokenUsage(
-                        inputToken = result.usageMetadata?.promptTokenCount,
-                        outputToken = result.usageMetadata?.candidatesTokenCount,
-                        totalToken = result.usageMetadata?.totalTokenCount,
+                        inputTokens = result.usageMetadata?.promptTokenCount,
+                        outputTokens = result.usageMetadata?.candidatesTokenCount,
+                        totalTokens = result.usageMetadata?.totalTokenCount,
                     ),
                 candidates =
                     result.candidates?.map {
@@ -101,12 +103,13 @@ class GoogleClient(
         override var defaultTemperature: Double? = null,
         override var timeout: Duration = 60.seconds,
         override var httpLogLevel: LogLevel = LogLevel.NONE,
+        override var httpEngine: HttpClientEngine? = null,
     ) : AiClient.Builder<GoogleClient>() {
-        override fun build(): GoogleClient = GoogleClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel)
+        override fun build(): GoogleClient = GoogleClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel, httpEngine)
     }
 
     private val client =
-        AiHttpClient("https://generativelanguage.googleapis.com/", timeout, httpLogLevel) {
+        AiHttpClient("https://generativelanguage.googleapis.com/", timeout, httpLogLevel, httpEngine) {
             append("x-goog-api-key", apiAky)
         }
 }

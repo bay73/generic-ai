@@ -56,7 +56,7 @@ data class BedrockGenerateTextResponse(
 
 @Serializable
 data class BedrockGenerateTextTokenUsage(
-    override val inputToken: Int? = null,
-    override val outputToken: Int? = null,
-    override val totalToken: Int? = null,
+    override val inputTokens: Int? = null,
+    override val outputTokens: Int? = null,
+    override val totalTokens: Int? = null,
 ) : GenerateTextTokenUsage()

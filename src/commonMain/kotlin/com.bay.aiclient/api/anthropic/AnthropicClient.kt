@@ -3,16 +3,18 @@ package com.bay.aiclient.api.anthropic
 import com.bay.aiclient.AiClient
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.utils.AiHttpClient
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.logging.LogLevel
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class AnthropicClient(
+class AnthropicClient internal constructor(
     apiAky: String,
     override var defaultModel: String? = null,
     override var defaultTemperature: Double? = null,
     override var timeout: Duration = 60.seconds,
-    httpLogLevel: LogLevel = LogLevel.NONE,
+    override var httpLogLevel: LogLevel = LogLevel.NONE,
+    httpEngine: HttpClientEngine? = null,
 ) : AiClient() {
     override suspend fun models(): Result<AnthropicModelsResponse> =
         Result.success(
@@ -54,9 +56,9 @@ class AnthropicClient(
                         ?: "",
                 usage =
                     AnthropicGenerateTextTokenUsage(
-                        inputToken = result.usage?.input_tokens,
-                        outputToken = result.usage?.output_tokens,
-                        totalToken = (result.usage?.input_tokens ?: 0) + (result.usage?.output_tokens ?: 0),
+                        inputTokens = result.usage?.input_tokens,
+                        outputTokens = result.usage?.output_tokens,
+                        totalTokens = (result.usage?.input_tokens ?: 0) + (result.usage?.output_tokens ?: 0),
                     ),
                 finishReason = result.stop_reason,
             )
@@ -84,12 +86,13 @@ class AnthropicClient(
         override var defaultTemperature: Double? = null,
         override var timeout: Duration = 60.seconds,
         override var httpLogLevel: LogLevel = LogLevel.NONE,
+        override var httpEngine: HttpClientEngine? = null,
     ) : AiClient.Builder<AnthropicClient>() {
-        override fun build(): AnthropicClient = AnthropicClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel)
+        override fun build(): AnthropicClient = AnthropicClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel, httpEngine)
     }
 
     private val client =
-        AiHttpClient("https://api.anthropic.com", timeout, httpLogLevel) {
+        AiHttpClient("https://api.anthropic.com", timeout, httpLogLevel, httpEngine) {
             append("x-api-key", apiAky)
             append("anthropic-version", "2023-06-01")
         }

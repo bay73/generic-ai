@@ -3,17 +3,19 @@ package com.bay.aiclient.api.ai21
 import com.bay.aiclient.AiClient
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.utils.AiHttpClient
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.http.HttpHeaders
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class Ai21Client(
+class Ai21Client internal constructor(
     apiAky: String,
     override var defaultModel: String? = null,
     override var defaultTemperature: Double? = null,
     override var timeout: Duration = 60.seconds,
-    httpLogLevel: LogLevel = LogLevel.NONE,
+    override var httpLogLevel: LogLevel = LogLevel.NONE,
+    httpEngine: HttpClientEngine? = null,
 ) : AiClient() {
     override suspend fun models(): Result<Ai21ModelsResponse> =
         Result.success(
@@ -47,9 +49,9 @@ class Ai21Client(
                         ?.content ?: "",
                 usage =
                     Ai21GenerateTextTokenUsage(
-                        inputToken = result.usage?.prompt_tokens,
-                        outputToken = result.usage?.completion_tokens,
-                        totalToken = result.usage?.total_tokens,
+                        inputTokens = result.usage?.prompt_tokens,
+                        outputTokens = result.usage?.completion_tokens,
+                        totalTokens = result.usage?.total_tokens,
                     ),
                 choices =
                     result.choices?.map {
@@ -84,12 +86,13 @@ class Ai21Client(
         override var defaultTemperature: Double? = null,
         override var timeout: Duration = 60.seconds,
         override var httpLogLevel: LogLevel = LogLevel.NONE,
+        override var httpEngine: HttpClientEngine? = null,
     ) : AiClient.Builder<Ai21Client>() {
-        override fun build(): Ai21Client = Ai21Client(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel)
+        override fun build(): Ai21Client = Ai21Client(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel, httpEngine)
     }
 
     private val client =
-        AiHttpClient("https://api.ai21.com", timeout, httpLogLevel) {
+        AiHttpClient("https://api.ai21.com", timeout, httpLogLevel, httpEngine) {
             append(HttpHeaders.Authorization, "Bearer $apiAky")
         }
 }
