@@ -1,3 +1,10 @@
+## 0.4.4
+- add finish reason to SambaNova response
+- fix errors:
+    - wrong usage of system instructions for Google client
+    - typo in usage response parameter names
+    - wrong processing of usage values for SambaNova response
+
 ## 0.4.3
 - add support for Cerebras Inference
 
