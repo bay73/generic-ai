@@ -43,7 +43,7 @@ class CohereClient internal constructor(
                 frequency_penalty = request.frequencyPenalty,
                 presence_penalty = request.presencePenalty,
             )
-        return client.runPost("/v1/chat/", httpRequest) { result: CohereHttpChatResponse ->
+        return client.runPost("/v1/chat", httpRequest) { result: CohereHttpChatResponse ->
             CohereGenerateTextResponse(
                 response = result.text,
                 usage =

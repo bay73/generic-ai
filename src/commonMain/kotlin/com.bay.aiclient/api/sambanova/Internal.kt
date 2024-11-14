@@ -30,11 +30,12 @@ data class SambaNovaHttpChatResponse(
 data class SambaNovaHttpChatResponseChoice(
     val index: Int? = null,
     val message: SambaNovaHttpChatMessage? = null,
+    val finish_reason: String? = null,
 )
 
 @Serializable
 data class SambaNovaHttpUsage(
-    val input_tokens_count: Int? = null,
-    val output_tokens_count: Int? = null,
-    val total_tokens_count: Int? = null,
+    val prompt_tokens: Int? = null,
+    val completion_tokens: Int? = null,
+    val total_tokens: Int? = null,
 )

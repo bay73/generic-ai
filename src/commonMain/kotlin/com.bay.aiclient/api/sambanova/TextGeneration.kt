@@ -75,4 +75,5 @@ data class SambaNovaChatMessage(
 data class SambaNovaChatResponseChoice(
     val index: Int? = null,
     val message: SambaNovaChatMessage? = null,
+    val finishReason: String? = null,
 )

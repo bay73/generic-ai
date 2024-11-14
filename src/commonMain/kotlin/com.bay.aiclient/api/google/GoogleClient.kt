@@ -36,7 +36,7 @@ class GoogleClient internal constructor(
         val httpRequest =
             GoogleHttpChatRequest(
                 contents = historyContent + newContent,
-                systemInstruction = GoogleHttpChatContent(parts = listOf(GoogleMessageTextPart(request.prompt))),
+                systemInstruction = request.systemInstructions?.let { GoogleHttpChatContent(parts = listOf(GoogleMessageTextPart(it))) },
                 generationConfig =
                     GoogleHttpGenerationConfig(
                         stopSequences = request.stopSequences,

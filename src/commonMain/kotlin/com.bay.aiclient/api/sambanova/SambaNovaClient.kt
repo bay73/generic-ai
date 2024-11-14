@@ -61,15 +61,16 @@ class SambaNovaClient internal constructor(
                         ?.content ?: "",
                 usage =
                     SambaNovaGenerateTextTokenUsage(
-                        inputTokens = result.usage?.input_tokens_count,
-                        outputTokens = result.usage?.output_tokens_count,
-                        totalTokens = result.usage?.total_tokens_count,
+                        inputTokens = result.usage?.prompt_tokens,
+                        outputTokens = result.usage?.completion_tokens,
+                        totalTokens = result.usage?.total_tokens,
                     ),
                 choices =
                     result.choices?.map {
                         SambaNovaChatResponseChoice(
                             index = it.index,
                             SambaNovaChatMessage(role = it.message?.role, content = it.message?.content),
+                            finishReason = it.finish_reason,
                         )
                     },
             )
