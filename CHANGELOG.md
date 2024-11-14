@@ -1,4 +1,5 @@
 ## 0.4.4
+> Published 14 Nov 2024
 - add finish reason to SambaNova response
 - fix errors:
     - wrong usage of system instructions for Google client
