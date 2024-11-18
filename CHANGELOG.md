@@ -1,4 +1,5 @@
 ## 0.5.0
+> Published 18 Nov 2024
 - support `responseFormat` attribute for text generation requests 
 
 ## 0.4.4
