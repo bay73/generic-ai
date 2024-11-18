@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class AnthropicHttpChatRequest(
     val messages: List<AnthropicHttpChatMessage>? = null,
     val model: String? = null,
-    val max_tokens: Int? = null,
+    val max_tokens: Int,
     val stop_sequences: List<String>? = null,
     val stream: Boolean? = false,
     val system: String? = null,

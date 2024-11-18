@@ -40,7 +40,7 @@ class AnthropicClient internal constructor(
             AnthropicHttpChatRequest(
                 model = request.model,
                 messages = historyMessages + newMessages,
-                max_tokens = request.maxOutputTokens,
+                max_tokens = request.maxOutputTokens ?: 4096,
                 stop_sequences = request.stopSequences,
                 system = request.systemInstructions,
                 temperature = request.temperature,

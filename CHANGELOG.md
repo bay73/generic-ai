@@ -1,3 +1,6 @@
+## 0.5.1
+- Add default value for maximum tokens parameter in Anthropic AI request
+
 ## 0.5.0
 > Published 18 Nov 2024
 - support `responseFormat` attribute for text generation requests 
