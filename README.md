@@ -95,19 +95,38 @@ There are set of generic settings which can be used for any AI provider to custo
 fun customizeRequest() {
     val response = cleint.generateText {
         model = "model_id" // Model id to use for a specific request.
+        prompt = "" // User prompt which initiates generation 
         systemInstructions = "" // Additional system instruction to adjust AI behavior.
-        chatHistory = listOf() // A list of chat messages in chronological order, representing a conversation between the user and the model.
+        responseFormat = ResponseFormat.JSON_OBJECT // Allows to specify response format. See details below.
+        chatHistory = listOf<TextMessage>() // A list of chat messages in chronological order, representing a conversation between the user and the model.
         maxOutputTokens = 100 // The maximum number of tokens that can be generated as part of the response.
-        stopSequences = listOf() // A list of strings that the model uses to stop generation.
+        stopSequences = listOf<String>() // A list of strings that the model uses to stop generation.
         temperature = 0.1 // A non-negative float that tunes the degree of randomness in generation. Lower temperatures mean less random generations.
         topP = 0.5 // An alternative way controlling the diversity of the model's responses. It's recommended to use either temperature or topP.
     }
 }
 ```
 
+`responseFormat` allows to specify returning text, generic JSON or validated JSON schema. The parameter has limited support by different providers:  
+
+| Provider      | Text | Generic JSON | JSON schema          |
+|---------------|------|--------------|----------------------|
+| AI21 Lab      | ✅    | ✅            |                      |
+| Anthropic     | ✅    |              |                      |
+| AWS Bedrock   | ✅    |              |                      |
+| Cerebras      | ✅    | ✅            |                      |
+| Cohere        | ✅    | ✅            | ✅                    |
+| Google Gemini | ✅    | ✅            | ✅                    |
+| Mistral       | ✅    | ✅            |                      |
+| OpenAI        | ✅    | ✅            | ✅ depending on model |
+| SambaNova     | ✅    |              |                      |
+| Together AI   | ✅    | ✅            | ✅ depending on model |
+   
+
+
 ## ⚙️ Provider specific settings
 
-### Additonal generation parameters
+### Additional generation parameters
 
 Some AI providers have additional settings which can be adjusted. To use this you need to request client of specific class: 
 ```kotlin

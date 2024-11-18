@@ -36,6 +36,7 @@ class Ai21Client internal constructor(
             Ai21HttpChatRequest(
                 model = request.model,
                 messages = historyMessages + newMessages,
+                response_format = Ai21HttpChatResponseFormat.from(request.responseFormat),
                 max_tokens = request.maxOutputTokens,
                 temperature = request.temperature,
                 stop = request.stopSequences,

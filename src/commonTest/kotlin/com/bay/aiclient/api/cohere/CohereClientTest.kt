@@ -1,6 +1,7 @@
 package com.bay.aiclient.api.cohere
 
 import com.bay.aiclient.domain.GenerateTextRequest
+import com.bay.aiclient.domain.ResponseFormat
 import com.bay.aiclient.domain.TextMessage
 import com.bay.aiclient.utils.MockHttpEngine
 import com.bay.aiclient.utils.RequestMatcher.Companion.getRequestTo
@@ -9,6 +10,9 @@ import com.bay.aiclient.utils.RequestMatcher.Companion.jsonBody
 import com.bay.aiclient.utils.RequestMatcher.Companion.postRequestTo
 import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -69,8 +73,8 @@ class CohereClientTest {
                     .expect(
                         jsonBody(
                             """{
-                                "message":"Question",
                                 "model":"test-model",
+                                "message":"Question",
                                 "chat_history":[]
                             }""",
                         ),
@@ -134,8 +138,9 @@ class CohereClientTest {
                     .expect(
                         jsonBody(
                             """{
-                                "message":"Question",
                                 "model":"test-model",
+                                "message":"Question",
+                                "response_format":{"type":"json_object"},
                                 "preamble":"Instructions",
                                 "chat_history":[
                                     {"role":"user","message":"first question"},
@@ -170,6 +175,7 @@ class CohereClientTest {
                             model = "test-model"
                             prompt = "Question"
                             systemInstructions = "Instructions"
+                            responseFormat = ResponseFormat.JSON_OBJECT
                             chatHistory = listOf(TextMessage("user", "first question"), TextMessage("assistant", "first answer"))
                             maxOutputTokens = 1000
                             stopSequences = listOf("bad word", "stop word")
@@ -196,8 +202,9 @@ class CohereClientTest {
                     .expect(
                         jsonBody(
                             """{
-                                "message":"Generic Question",
                                 "model":"generic-model",
+                                "message":"Generic Question",
+                                "response_format":{"type":"text"},
                                 "preamble":"System Instructions",
                                 "chat_history":[
                                     {"role":"user","message":"Question A"},
@@ -227,6 +234,7 @@ class CohereClientTest {
                             model = "generic-model"
                             prompt = "Generic Question"
                             systemInstructions = "System Instructions"
+                            responseFormat = ResponseFormat.TEXT
                             chatHistory = listOf(TextMessage("user", "Question A"), TextMessage("assistant", "Answer A"))
                             maxOutputTokens = 2000
                             stopSequences = listOf("bad", "stop")
@@ -248,8 +256,8 @@ class CohereClientTest {
                     .expect(
                         jsonBody(
                             """{
-                                "message":"Question",
                                 "model":"default-model",
+                                "message":"Question",
                                 "chat_history":[],
                                 "temperature":0.66
                             }""",
@@ -270,6 +278,114 @@ class CohereClientTest {
                 client.generateText {
                     prompt = "Question"
                 }
+
+            assertTrue(result.isSuccess)
+        }
+
+    @Test
+    fun responseSchema_passedToRequest() =
+        runTest {
+            val schema =
+                JsonObject(
+                    mapOf(
+                        "type" to JsonPrimitive("object"),
+                        "properties" to
+                            JsonObject(
+                                mapOf(
+                                    "answers" to
+                                        JsonObject(
+                                            mapOf(
+                                                "type" to JsonPrimitive("array"),
+                                                "items" to
+                                                    JsonObject(
+                                                        mapOf(
+                                                            "type" to JsonPrimitive("object"),
+                                                            "properties" to
+                                                                JsonObject(
+                                                                    mapOf(
+                                                                        "text" to
+                                                                            JsonObject(
+                                                                                mapOf(
+                                                                                    "type" to JsonPrimitive("string"),
+                                                                                ),
+                                                                            ),
+                                                                        "source" to
+                                                                            JsonObject(
+                                                                                mapOf(
+                                                                                    "type" to JsonPrimitive("string"),
+                                                                                ),
+                                                                            ),
+                                                                    ),
+                                                                ),
+                                                            "required" to
+                                                                JsonArray(
+                                                                    listOf(JsonPrimitive("text")),
+                                                                ),
+                                                        ),
+                                                    ),
+                                            ),
+                                        ),
+                                ),
+                            ),
+                        "required" to
+                            JsonArray(
+                                listOf(JsonPrimitive("answers")),
+                            ),
+                    ),
+                )
+
+            val mockEngine =
+                MockHttpEngine()
+                    .expect(postRequestTo("https://api.cohere.com/v1/chat"))
+                    .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
+                    .expect(
+                        jsonBody(
+                            """{
+                                "model":"generic-model",
+                                "message":"Generic Question",
+                                "response_format":{
+                                    "type":"json_object",
+                                    "json_schema":{
+                                        "type":"object",
+                                        "properties":{
+                                            "answers":{
+                                                "type":"array",
+                                                "items":{
+                                                    "type":"object",
+                                                    "properties":{
+                                                        "text":{"type":"string"},
+                                                        "source":{"type":"string"}
+                                                    },
+                                                    "required":["text"]
+                                                }
+                                            }
+                                        },
+                                        "required":["answers"]
+                                    }
+                                },
+                                "chat_history":[]
+                            }""",
+                        ),
+                    ).andRespondOk("{ }")
+
+            val client =
+                CohereClient
+                    .Builder()
+                    .apply {
+                        apiAky = "fake_key"
+                        httpEngine = mockEngine
+                    }.build()
+
+            val result =
+                client.generateText(
+                    GenerateTextRequest
+                        .Builder()
+                        .apply {
+                            model = "generic-model"
+                            prompt = "Generic Question"
+                            responseFormat = ResponseFormat.jsonSchema(schema)
+                        }.build(),
+                )
 
             assertTrue(result.isSuccess)
         }

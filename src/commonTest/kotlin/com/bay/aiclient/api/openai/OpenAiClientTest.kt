@@ -1,6 +1,7 @@
 package com.bay.aiclient.api.openai
 
 import com.bay.aiclient.domain.GenerateTextRequest
+import com.bay.aiclient.domain.ResponseFormat
 import com.bay.aiclient.domain.TextMessage
 import com.bay.aiclient.utils.MockHttpEngine
 import com.bay.aiclient.utils.RequestMatcher.Companion.getRequestTo
@@ -9,6 +10,9 @@ import com.bay.aiclient.utils.RequestMatcher.Companion.jsonBody
 import com.bay.aiclient.utils.RequestMatcher.Companion.postRequestTo
 import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -154,6 +158,8 @@ class OpenAiClientTest {
                                 ],
                                 "model":"test-model",
                                 "max_completion_tokens":1000,
+                                "response_format":{"type":"json_object"},
+                                "stop":["bad word","stop word"],
                                 "temperature":0.33,
                                 "top_p":0.55
                             }""",
@@ -176,6 +182,7 @@ class OpenAiClientTest {
                             model = "test-model"
                             prompt = "Question"
                             systemInstructions = "Instructions"
+                            responseFormat = ResponseFormat.JSON_OBJECT
                             chatHistory = listOf(TextMessage("user", "first question"), TextMessage("assistant", "first answer"))
                             maxOutputTokens = 1000
                             stopSequences = listOf("bad word", "stop word")
@@ -205,6 +212,8 @@ class OpenAiClientTest {
                                 ],
                                 "model":"generic-model",
                                 "max_completion_tokens":2000,
+                                "response_format":{"type":"text"},
+                                "stop":["bad","stop"],
                                 "temperature":0.66,
                                 "top_p":0.77
                             }""",
@@ -228,6 +237,7 @@ class OpenAiClientTest {
                             model = "generic-model"
                             prompt = "Generic Question"
                             systemInstructions = "System Instructions"
+                            responseFormat = ResponseFormat.TEXT
                             chatHistory = listOf(TextMessage("user", "Question A"), TextMessage("assistant", "Answer A"))
                             maxOutputTokens = 2000
                             stopSequences = listOf("bad", "stop")
@@ -272,6 +282,120 @@ class OpenAiClientTest {
                 client.generateText {
                     prompt = "Question"
                 }
+
+            assertTrue(result.isSuccess)
+        }
+
+    @Test
+    fun responseSchema_passedToRequest() =
+        runTest {
+            val schema =
+                JsonObject(
+                    mapOf(
+                        "type" to JsonPrimitive("object"),
+                        "properties" to
+                            JsonObject(
+                                mapOf(
+                                    "answers" to
+                                        JsonObject(
+                                            mapOf(
+                                                "type" to JsonPrimitive("array"),
+                                                "items" to
+                                                    JsonObject(
+                                                        mapOf(
+                                                            "type" to JsonPrimitive("object"),
+                                                            "properties" to
+                                                                JsonObject(
+                                                                    mapOf(
+                                                                        "text" to
+                                                                            JsonObject(
+                                                                                mapOf(
+                                                                                    "type" to JsonPrimitive("string"),
+                                                                                ),
+                                                                            ),
+                                                                        "source" to
+                                                                            JsonObject(
+                                                                                mapOf(
+                                                                                    "type" to JsonPrimitive("string"),
+                                                                                ),
+                                                                            ),
+                                                                    ),
+                                                                ),
+                                                            "required" to
+                                                                JsonArray(
+                                                                    listOf(JsonPrimitive("text")),
+                                                                ),
+                                                        ),
+                                                    ),
+                                            ),
+                                        ),
+                                ),
+                            ),
+                        "required" to
+                            JsonArray(
+                                listOf(JsonPrimitive("answers")),
+                            ),
+                    ),
+                )
+            val mockEngine =
+                MockHttpEngine()
+                    .expect(postRequestTo("https://api.openai.com/v1/chat/completions"))
+                    .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
+                    .expect(
+                        jsonBody(
+                            """{
+                                "messages":[
+                                    {"role":"user","content":"Generic Question"}
+                                ],
+                                "model":"generic-model",
+                                "response_format":{
+                                    "type":"json_schema",
+                                    "json_schema":{
+                                        "name":"response_format",
+                                        "description":null,
+                                        "strict":false,
+                                        "schema":{
+                                            "type":"object",
+                                            "properties":{
+                                                "answers":{
+                                                    "type":"array",
+                                                    "items":{
+                                                        "type":"object",
+                                                        "properties":{
+                                                            "text":{"type":"string"},
+                                                            "source":{"type":"string"}
+                                                        },
+                                                        "required":["text"]
+                                                    }
+                                                }
+                                            },
+                                            "required":["answers"]
+                                        }
+                                    }
+                                }
+                            }""",
+                        ),
+                    ).andRespondOk("{ }")
+
+            val client =
+                OpenAiClient
+                    .Builder()
+                    .apply {
+                        apiAky = "fake_key"
+                        defaultModel = "default_model"
+                        httpEngine = mockEngine
+                    }.build()
+
+            val result =
+                client.generateText(
+                    GenerateTextRequest
+                        .Builder()
+                        .apply {
+                            model = "generic-model"
+                            prompt = "Generic Question"
+                            responseFormat = ResponseFormat.jsonSchema(schema)
+                        }.build(),
+                )
 
             assertTrue(result.isSuccess)
         }

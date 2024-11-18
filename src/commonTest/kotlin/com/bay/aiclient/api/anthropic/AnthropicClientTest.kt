@@ -1,6 +1,7 @@
 package com.bay.aiclient.api.anthropic
 
 import com.bay.aiclient.domain.GenerateTextRequest
+import com.bay.aiclient.domain.ResponseFormat
 import com.bay.aiclient.domain.TextMessage
 import com.bay.aiclient.utils.MockHttpEngine
 import com.bay.aiclient.utils.RequestMatcher.Companion.header
@@ -128,6 +129,7 @@ class AnthropicClientTest {
                     model = "test-model"
                     prompt = "Question"
                     systemInstructions = "Instructions"
+                    responseFormat = ResponseFormat.JSON_OBJECT // This going to be ignored as only text is supported
                     chatHistory = listOf(TextMessage("user", "first question"), TextMessage("assistant", "first answer"))
                     maxOutputTokens = 1000
                     stopSequences = listOf("bad word", "stop word")
@@ -181,6 +183,7 @@ class AnthropicClientTest {
                             model = "generic-model"
                             prompt = "Generic Question"
                             systemInstructions = "System Instructions"
+                            responseFormat = ResponseFormat.TEXT
                             chatHistory = listOf(TextMessage("user", "Question A"), TextMessage("assistant", "Answer A"))
                             maxOutputTokens = 2000
                             stopSequences = listOf("bad", "stop")

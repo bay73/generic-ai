@@ -1,6 +1,7 @@
 package com.bay.aiclient.api.google
 
 import com.bay.aiclient.domain.GenerateTextRequest
+import com.bay.aiclient.domain.ResponseFormat
 import com.bay.aiclient.domain.TextMessage
 import com.bay.aiclient.utils.MockHttpEngine
 import com.bay.aiclient.utils.RequestMatcher.Companion.getRequestTo
@@ -8,6 +9,9 @@ import com.bay.aiclient.utils.RequestMatcher.Companion.header
 import com.bay.aiclient.utils.RequestMatcher.Companion.jsonBody
 import com.bay.aiclient.utils.RequestMatcher.Companion.postRequestTo
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -167,6 +171,7 @@ class GoogleClientTest {
                                 "systemInstruction":{"parts":[{"text":"Instructions"}]},
                                 "generationConfig":{
                                     "stopSequences":["bad word","stop word"],
+                                    "responseMimeType":"application/json",
                                     "maxOutputTokens":1000,
                                     "temperature":0.33,
                                     "topP":0.55,
@@ -194,6 +199,7 @@ class GoogleClientTest {
                             model = "test-model"
                             prompt = "Question"
                             systemInstructions = "Instructions"
+                            responseFormat = ResponseFormat.JSON_OBJECT
                             chatHistory = listOf(TextMessage("user", "first question"), TextMessage("assistant", "first answer"))
                             maxOutputTokens = 1000
                             stopSequences = listOf("bad word", "stop word")
@@ -226,6 +232,7 @@ class GoogleClientTest {
                                 "systemInstruction":{"parts":[{"text":"System Instructions"}]},
                                 "generationConfig":{
                                     "stopSequences":["bad","stop"],
+                                    "responseMimeType":"text/plain",
                                     "maxOutputTokens":2000,
                                     "temperature":0.66,
                                     "topP":0.77
@@ -251,6 +258,7 @@ class GoogleClientTest {
                             model = "generic-model"
                             prompt = "Generic Question"
                             systemInstructions = "System Instructions"
+                            responseFormat = ResponseFormat.TEXT
                             chatHistory = listOf(TextMessage("user", "Question A"), TextMessage("assistant", "Answer A"))
                             maxOutputTokens = 2000
                             stopSequences = listOf("bad", "stop")
@@ -296,6 +304,97 @@ class GoogleClientTest {
                 client.generateText {
                     prompt = "Question"
                 }
+
+            assertTrue(result.isSuccess)
+        }
+
+    @Test
+    fun responseSchema_passedToRequest() =
+        runTest {
+            val schema =
+                JsonObject(
+                    mapOf(
+                        "type" to JsonPrimitive("object"),
+                        "properties" to
+                            JsonObject(
+                                mapOf(
+                                    "answer" to
+                                        JsonObject(
+                                            mapOf(
+                                                "type" to JsonPrimitive("object"),
+                                                "properties" to
+                                                    JsonObject(
+                                                        mapOf(
+                                                            "text" to
+                                                                JsonObject(
+                                                                    mapOf(
+                                                                        "type" to JsonPrimitive("string"),
+                                                                    ),
+                                                                ),
+                                                        ),
+                                                    ),
+                                                "required" to
+                                                    JsonArray(
+                                                        listOf(JsonPrimitive("text")),
+                                                    ),
+                                            ),
+                                        ),
+                                ),
+                            ),
+                        "required" to
+                            JsonArray(
+                                listOf(JsonPrimitive("answer")),
+                            ),
+                    ),
+                )
+            val mockEngine =
+                MockHttpEngine()
+                    .expect(postRequestTo("https://generativelanguage.googleapis.com/v1beta/generic-model:generateContent"))
+                    .expect(header("x-goog-api-key", "fake_key"))
+                    .expect(
+                        jsonBody(
+                            """{
+                                "contents":[
+                                    {"role":"user","parts":[{"text":"Generic Question"}]}
+                                ],
+                                "generationConfig":{
+                                    "responseMimeType":"application/json",
+                                    "responseSchema":{
+                                        "type":"object",
+                                        "properties":{
+                                            "answer":{
+                                                "type":"object",
+                                                "properties":{
+                                                    "text":{"type":"string"}
+                                                },
+                                                "required":["text"]
+                                            }
+                                        },
+                                        "required":["answer"]
+                                    }
+                                }
+                            }""",
+                        ),
+                    ).andRespondOk("{ }")
+
+            val client =
+                GoogleClient
+                    .Builder()
+                    .apply {
+                        apiAky = "fake_key"
+                        httpEngine = mockEngine
+                    }.build()
+
+            val result =
+                client.generateText(
+                    GenerateTextRequest
+                        .Builder()
+                        .apply {
+                            model = "generic-model"
+                            prompt = "Generic Question"
+                            responseFormat = ResponseFormat.jsonSchema(schema)
+                        }.build(),
+                )
 
             assertTrue(result.isSuccess)
         }

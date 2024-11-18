@@ -32,6 +32,7 @@ class CohereClient internal constructor(
                 message = request.prompt,
                 model = request.model,
                 preamble = request.systemInstructions,
+                response_format = CohereHttpChatResponseFormat.from(request.responseFormat),
                 chat_history = historyMessages,
                 max_tokens = request.maxOutputTokens,
                 temperature = request.temperature,

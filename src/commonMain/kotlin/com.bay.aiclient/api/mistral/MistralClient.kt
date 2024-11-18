@@ -46,10 +46,16 @@ class MistralClient internal constructor(
         val httpRequest =
             MistralHttpChatRequest(
                 model = request.model,
-                messages = historyMessages + newMessages,
-                max_tokens = request.maxOutputTokens,
                 temperature = request.temperature,
                 top_p = request.topP,
+                max_tokens = request.maxOutputTokens,
+                stream = false,
+                stop = request.stopSequences,
+                random_seed = request.seed,
+                messages = historyMessages + newMessages,
+                response_format = MistralHttpChatResponseFormat.from(request.responseFormat),
+                presence_penalty = request.presencePenalty,
+                frequency_penalty = request.frequencyPenalty,
             )
         return client.runPost("/v1/chat/completions", httpRequest) { result: MistralHttpChatResponse ->
             MistralGenerateTextResponse(

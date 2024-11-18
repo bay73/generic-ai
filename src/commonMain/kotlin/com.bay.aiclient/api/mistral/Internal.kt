@@ -1,14 +1,21 @@
 package com.bay.aiclient.api.mistral
 
+import com.bay.aiclient.domain.ResponseFormat
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class MistralHttpChatRequest(
-    val messages: List<MistralHttpChatMessage>? = null,
     val model: String? = null,
-    val max_tokens: Int? = null,
     val temperature: Double? = null,
     val top_p: Double? = null,
+    val max_tokens: Int? = null,
+    val stream: Boolean? = false,
+    val stop: List<String>? = null,
+    val random_seed: Int? = null,
+    val messages: List<MistralHttpChatMessage>? = null,
+    val response_format: MistralHttpChatResponseFormat? = null,
+    val presence_penalty: Double? = null,
+    val frequency_penalty: Double? = null,
 )
 
 @Serializable
@@ -16,6 +23,21 @@ data class MistralHttpChatMessage(
     val role: String? = null,
     val content: String? = null,
 )
+
+@Serializable
+data class MistralHttpChatResponseFormat(
+    val type: String?,
+) {
+    companion object {
+        fun from(genericResponseFormat: ResponseFormat?): MistralHttpChatResponseFormat? =
+            when (genericResponseFormat?.type) {
+                null -> null
+                ResponseFormat.Type.TEXT -> MistralHttpChatResponseFormat("text")
+                ResponseFormat.Type.JSON_OBJECT, ResponseFormat.Type.JSON_SCHEMA ->
+                    MistralHttpChatResponseFormat("json_object")
+            }
+    }
+}
 
 @Serializable
 data class MistralHttpChatResponse(

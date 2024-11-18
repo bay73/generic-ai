@@ -1,6 +1,8 @@
 package com.bay.aiclient.api.google
 
+import com.bay.aiclient.domain.ResponseFormat
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
 @Serializable
 data class GoogleHttpChatRequest(
@@ -23,13 +25,26 @@ data class GoogleMessageTextPart(
 @Serializable
 data class GoogleHttpGenerationConfig(
     val stopSequences: List<String>? = null,
+    val responseMimeType: String? = null,
+    val responseSchema: JsonObject? = null,
+    val candidateCount: Int? = null,
     val maxOutputTokens: Int? = null,
     val temperature: Double? = null,
     val topP: Double? = null,
     val topK: Int? = null,
     val presencePenalty: Double? = null,
     val frequencyPenalty: Double? = null,
-)
+) {
+    companion object {
+        fun mimeTypeFrom(genericResponseFormat: ResponseFormat?): String? =
+            when (genericResponseFormat?.type) {
+                null -> null
+                ResponseFormat.Type.TEXT -> "text/plain"
+                ResponseFormat.Type.JSON_OBJECT, ResponseFormat.Type.JSON_SCHEMA ->
+                    "application/json"
+            }
+    }
+}
 
 @Serializable
 data class GoogleHttpChatResponse(

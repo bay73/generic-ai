@@ -46,6 +46,7 @@ class CerebrasClient internal constructor(
                 model = request.model,
                 messages = historyMessages + newMessages,
                 max_completion_tokens = request.maxOutputTokens,
+                response_format = CerebrasHttpChatResponseFormat.from(request.responseFormat),
                 seed = request.seed,
                 stop = request.stopSequences,
                 temperature = request.temperature,

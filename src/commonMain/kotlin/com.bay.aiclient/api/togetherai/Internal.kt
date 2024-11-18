@@ -1,6 +1,8 @@
 package com.bay.aiclient.api.togetherai
 
+import com.bay.aiclient.domain.ResponseFormat
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
 @Serializable
 data class TogetherAiHttpChatRequest(
@@ -16,6 +18,7 @@ data class TogetherAiHttpChatRequest(
     val presence_penalty: Double? = null,
     val frequency_penalty: Double? = null,
     val seed: Int? = null,
+    val response_format: TogetherAiHttpChatResponseFormat? = null,
 )
 
 @Serializable
@@ -23,6 +26,25 @@ data class TogetherAiHttpChatMessage(
     val role: String? = null,
     val content: String? = null,
 )
+
+@Serializable
+data class TogetherAiHttpChatResponseFormat(
+    val type: String?,
+    val schema: JsonObject? = null,
+) {
+    companion object {
+        fun from(genericResponseFormat: ResponseFormat?): TogetherAiHttpChatResponseFormat? =
+            when (genericResponseFormat?.type) {
+                null, ResponseFormat.Type.TEXT -> null
+                ResponseFormat.Type.JSON_OBJECT -> TogetherAiHttpChatResponseFormat("json_object")
+                ResponseFormat.Type.JSON_SCHEMA ->
+                    TogetherAiHttpChatResponseFormat(
+                        "json_object",
+                        genericResponseFormat.schema,
+                    )
+            }
+    }
+}
 
 @Serializable
 data class TogetherAiHttpChatResponse(

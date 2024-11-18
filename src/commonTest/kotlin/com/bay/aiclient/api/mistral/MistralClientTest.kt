@@ -1,6 +1,7 @@
 package com.bay.aiclient.api.mistral
 
 import com.bay.aiclient.domain.GenerateTextRequest
+import com.bay.aiclient.domain.ResponseFormat
 import com.bay.aiclient.domain.TextMessage
 import com.bay.aiclient.utils.MockHttpEngine
 import com.bay.aiclient.utils.RequestMatcher.Companion.getRequestTo
@@ -79,7 +80,7 @@ class MistralClientTest {
 
             val expectedModels =
                 listOf(
-                    MistralModel("ministral-3b-2410", "ministral-3b-2410", "Official  model", null, 1731588548),
+                    MistralModel("ministral-3b-2410", "ministral-3b-2410", "Official model", null, 1731588548),
                     MistralModel("ministral-3b-latest", "ministral-3b-2410", "Official model", null, 1731588548),
                 )
 
@@ -100,8 +101,8 @@ class MistralClientTest {
                     .expect(
                         jsonBody(
                             """{
-                                "messages":[{"role":"user","content":"Question"}],
-                                "model":"test-model"
+                                "model":"test-model",
+                                "messages":[{"role":"user","content":"Question"}]
                             }""",
                         ),
                     ).andRespondOk(
@@ -157,16 +158,18 @@ class MistralClientTest {
                     .expect(
                         jsonBody(
                             """{
+                                "model":"test-model",
+                                "temperature":0.33,
+                                "top_p":0.55,
+                                "max_tokens":1000,
+                                "stop":["bad word","stop word"],
                                 "messages":[
                                     {"role":"user","content":"first question"},
                                     {"role":"assistant","content":"first answer"},
                                     {"role":"system","content":"Instructions"},
                                     {"role":"user","content":"Question"}
                                 ],
-                                "model":"test-model",
-                                "max_tokens":1000,
-                                "temperature":0.33,
-                                "top_p":0.55
+                                "response_format":{"type":"json_object"}
                             }""",
                         ),
                     ).andRespondOk("{ }")
@@ -187,6 +190,7 @@ class MistralClientTest {
                             model = "test-model"
                             prompt = "Question"
                             systemInstructions = "Instructions"
+                            responseFormat = ResponseFormat.JSON_OBJECT
                             chatHistory = listOf(TextMessage("user", "first question"), TextMessage("assistant", "first answer"))
                             maxOutputTokens = 1000
                             stopSequences = listOf("bad word", "stop word")
@@ -208,16 +212,18 @@ class MistralClientTest {
                     .expect(
                         jsonBody(
                             """{
+                                "model":"generic-model",
+                                "temperature":0.66,
+                                "top_p":0.77,
+                                "max_tokens":2000,
+                                "stop":["bad","stop"],
                                 "messages":[
                                     {"role":"user","content":"Question A"},
                                     {"role":"assistant","content":"Answer A"},
                                     {"role":"system","content":"System Instructions"},
                                     {"role":"user","content":"Generic Question"}
                                 ],
-                                "model":"generic-model",
-                                "max_tokens":2000,
-                                "temperature":0.66,
-                                "top_p":0.77
+                                "response_format":{"type":"text"}
                             }""",
                         ),
                     ).andRespondOk("{ }")
@@ -239,6 +245,7 @@ class MistralClientTest {
                             model = "generic-model"
                             prompt = "Generic Question"
                             systemInstructions = "System Instructions"
+                            responseFormat = ResponseFormat.TEXT
                             chatHistory = listOf(TextMessage("user", "Question A"), TextMessage("assistant", "Answer A"))
                             maxOutputTokens = 2000
                             stopSequences = listOf("bad", "stop")
@@ -260,11 +267,11 @@ class MistralClientTest {
                     .expect(
                         jsonBody(
                             """{
+                                "model":"default-model",
+                                "temperature":0.66,
                                 "messages":[
                                     {"role":"user","content":"Question"}
-                                ],
-                                "model":"default-model",
-                                "temperature":0.66
+                                ]
                             }""",
                         ),
                     ).andRespondOk("{}")

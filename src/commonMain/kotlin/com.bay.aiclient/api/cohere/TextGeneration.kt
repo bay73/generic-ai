@@ -3,6 +3,7 @@ package com.bay.aiclient.api.cohere
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.domain.GenerateTextResponse
 import com.bay.aiclient.domain.GenerateTextTokenUsage
+import com.bay.aiclient.domain.ResponseFormat
 import com.bay.aiclient.domain.TextMessage
 import kotlinx.serialization.Serializable
 
@@ -11,6 +12,7 @@ data class CohereGenerateTextRequest(
     override val model: String = "",
     override val prompt: String = "",
     override val systemInstructions: String? = null,
+    override val responseFormat: ResponseFormat? = null,
     override val chatHistory: List<TextMessage>? = emptyList(),
     override val maxOutputTokens: Int? = null,
     override val stopSequences: List<String>? = null,
@@ -26,6 +28,7 @@ data class CohereGenerateTextRequest(
         override var prompt: String = "",
         override var model: String? = null,
         override var systemInstructions: String? = null,
+        override var responseFormat: ResponseFormat? = null,
         override var chatHistory: List<TextMessage>? = null,
         override var maxOutputTokens: Int? = null,
         override var stopSequences: List<String>? = null,
@@ -43,6 +46,7 @@ data class CohereGenerateTextRequest(
                     it,
                     prompt,
                     systemInstructions,
+                    responseFormat,
                     chatHistory,
                     maxOutputTokens,
                     stopSequences,

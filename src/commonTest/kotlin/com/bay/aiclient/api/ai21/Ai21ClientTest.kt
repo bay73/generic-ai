@@ -1,6 +1,7 @@
 package com.bay.aiclient.api.ai21
 
 import com.bay.aiclient.domain.GenerateTextRequest
+import com.bay.aiclient.domain.ResponseFormat
 import com.bay.aiclient.domain.TextMessage
 import com.bay.aiclient.utils.MockHttpEngine
 import com.bay.aiclient.utils.RequestMatcher.Companion.header
@@ -93,6 +94,7 @@ class Ai21ClientTest {
                                     {"role":"system", "content":"Instructions"},
                                     {"role":"user", "content":"Question"}
                                 ],
+                                "response_format":{"type":"json_object"},
                                 "max_tokens":1000,
                                 "temperature":0.33,
                                 "stop":["bad word","stop word"]
@@ -113,6 +115,7 @@ class Ai21ClientTest {
                     model = "test-model"
                     prompt = "Question"
                     systemInstructions = "Instructions"
+                    responseFormat = ResponseFormat.JSON_OBJECT
                     chatHistory = listOf(TextMessage("user", "first question"), TextMessage("assistant", "first answer"))
                     maxOutputTokens = 1000
                     stopSequences = listOf("bad word", "stop word")
@@ -164,6 +167,7 @@ class Ai21ClientTest {
                             model = "generic-model"
                             prompt = "Generic Question"
                             systemInstructions = "Instructions"
+                            responseFormat = ResponseFormat.TEXT
                             chatHistory = listOf(TextMessage("user", "Question A"), TextMessage("assistant", "Answer A"))
                             maxOutputTokens = 2000
                             stopSequences = listOf("bad", "stop")

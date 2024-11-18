@@ -1,3 +1,6 @@
+## 0.5.0
+- support `responseFormat` attribute for text generation requests 
+
 ## 0.4.4
 > Published 14 Nov 2024
 - add finish reason to SambaNova response

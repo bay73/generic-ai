@@ -38,9 +38,15 @@ class OpenAiClient internal constructor(
 
         val httpRequest =
             OpenAiHttpChatRequest(
-                model = request.model,
                 messages = historyMessages + newMessages,
+                model = request.model,
+                frequency_penalty = request.frequencyPenalty,
                 max_completion_tokens = request.maxOutputTokens,
+                presence_penalty = request.presencePenalty,
+                response_format = OpenAiHttpChatResponseFormat.from(request.responseFormat),
+                seed = request.seed,
+                stop = request.stopSequences,
+                stream = false,
                 temperature = request.temperature,
                 top_p = request.topP,
             )

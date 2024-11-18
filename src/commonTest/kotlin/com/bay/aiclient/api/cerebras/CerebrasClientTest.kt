@@ -1,6 +1,7 @@
 package com.bay.aiclient.api.cerebras
 
 import com.bay.aiclient.domain.GenerateTextRequest
+import com.bay.aiclient.domain.ResponseFormat
 import com.bay.aiclient.domain.TextMessage
 import com.bay.aiclient.utils.MockHttpEngine
 import com.bay.aiclient.utils.RequestMatcher.Companion.getRequestTo
@@ -147,6 +148,7 @@ class CerebrasClientTest {
                                 ],
                                 "model":"test-model",
                                 "max_completion_tokens":1000,
+                                "response_format":{"type":"json_object"},
                                 "seed": 10,
                                 "stop":["bad word","stop word"],
                                 "temperature":0.33,
@@ -171,6 +173,7 @@ class CerebrasClientTest {
                             model = "test-model"
                             prompt = "Question"
                             systemInstructions = "Instructions"
+                            responseFormat = ResponseFormat.JSON_OBJECT
                             chatHistory = listOf(TextMessage("user", "first question"), TextMessage("assistant", "first answer"))
                             maxOutputTokens = 1000
                             stopSequences = listOf("bad word", "stop word")
@@ -225,6 +228,7 @@ class CerebrasClientTest {
                             model = "generic-model"
                             prompt = "Generic Question"
                             systemInstructions = "System Instructions"
+                            responseFormat = ResponseFormat.TEXT
                             chatHistory = listOf(TextMessage("user", "Question A"), TextMessage("assistant", "Answer A"))
                             maxOutputTokens = 2000
                             stopSequences = listOf("bad", "stop")

@@ -1,6 +1,7 @@
 package com.bay.aiclient.api.togetherai
 
 import com.bay.aiclient.domain.GenerateTextRequest
+import com.bay.aiclient.domain.ResponseFormat
 import com.bay.aiclient.domain.TextMessage
 import com.bay.aiclient.utils.MockHttpEngine
 import com.bay.aiclient.utils.RequestMatcher.Companion.getRequestTo
@@ -9,6 +10,9 @@ import com.bay.aiclient.utils.RequestMatcher.Companion.jsonBody
 import com.bay.aiclient.utils.RequestMatcher.Companion.postRequestTo
 import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -166,7 +170,8 @@ class TogetherAiClientTest {
                                 "repetition_penalty":0.3,
                                 "presence_penalty":0.1,
                                 "frequency_penalty":0.5,
-                                "seed":10
+                                "seed":10,
+                                "response_format":{"type":"json_object"}
                             }""",
                         ),
                     ).andRespondOk("{ }")
@@ -187,6 +192,7 @@ class TogetherAiClientTest {
                             model = "test-model"
                             prompt = "Question"
                             systemInstructions = "Instructions"
+                            responseFormat = ResponseFormat.JSON_OBJECT
                             chatHistory = listOf(TextMessage("user", "first question"), TextMessage("assistant", "first answer"))
                             maxOutputTokens = 1000
                             stopSequences = listOf("bad word", "stop word")
@@ -245,6 +251,7 @@ class TogetherAiClientTest {
                             model = "generic-model"
                             prompt = "Generic Question"
                             systemInstructions = "System Instructions"
+                            responseFormat = ResponseFormat.TEXT
                             chatHistory = listOf(TextMessage("user", "Question A"), TextMessage("assistant", "Answer A"))
                             maxOutputTokens = 2000
                             stopSequences = listOf("bad", "stop")
@@ -289,6 +296,115 @@ class TogetherAiClientTest {
                 client.generateText {
                     prompt = "Question"
                 }
+
+            assertTrue(result.isSuccess)
+        }
+
+    @Test
+    fun responseSchema_passedToRequest() =
+        runTest {
+            val schema =
+                JsonObject(
+                    mapOf(
+                        "type" to JsonPrimitive("object"),
+                        "properties" to
+                            JsonObject(
+                                mapOf(
+                                    "answers" to
+                                        JsonObject(
+                                            mapOf(
+                                                "type" to JsonPrimitive("array"),
+                                                "items" to
+                                                    JsonObject(
+                                                        mapOf(
+                                                            "type" to JsonPrimitive("object"),
+                                                            "properties" to
+                                                                JsonObject(
+                                                                    mapOf(
+                                                                        "text" to
+                                                                            JsonObject(
+                                                                                mapOf(
+                                                                                    "type" to JsonPrimitive("string"),
+                                                                                ),
+                                                                            ),
+                                                                        "source" to
+                                                                            JsonObject(
+                                                                                mapOf(
+                                                                                    "type" to JsonPrimitive("string"),
+                                                                                ),
+                                                                            ),
+                                                                    ),
+                                                                ),
+                                                            "required" to
+                                                                JsonArray(
+                                                                    listOf(JsonPrimitive("text")),
+                                                                ),
+                                                        ),
+                                                    ),
+                                            ),
+                                        ),
+                                ),
+                            ),
+                        "required" to
+                            JsonArray(
+                                listOf(JsonPrimitive("answers")),
+                            ),
+                    ),
+                )
+            val mockEngine =
+                MockHttpEngine()
+                    .expect(postRequestTo("https://api.together.xyz/v1/chat/completions"))
+                    .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
+                    .expect(
+                        jsonBody(
+                            """{
+                                "messages":[
+                                    {"role":"user","content":"Generic Question"}
+                                ],
+                                "model":"generic-model",
+                                "response_format":{
+                                    "type":"json_object",
+                                    "schema":{
+                                        "type":"object",
+                                        "properties":{
+                                            "answers":{
+                                                "type":"array",
+                                                "items":{
+                                                    "type":"object",
+                                                    "properties":{
+                                                        "text":{"type":"string"},
+                                                        "source":{"type":"string"}
+                                                    },
+                                                    "required":["text"]
+                                                }
+                                            }
+                                        },
+                                        "required":["answers"]
+                                    }
+                                }
+                            }""",
+                        ),
+                    ).andRespondOk("{ }")
+
+            val client =
+                TogetherAiClient
+                    .Builder()
+                    .apply {
+                        apiAky = "fake_key"
+                        defaultModel = "default_model"
+                        httpEngine = mockEngine
+                    }.build()
+
+            val result =
+                client.generateText(
+                    GenerateTextRequest
+                        .Builder()
+                        .apply {
+                            model = "generic-model"
+                            prompt = "Generic Question"
+                            responseFormat = ResponseFormat.jsonSchema(schema)
+                        }.build(),
+                )
 
             assertTrue(result.isSuccess)
         }

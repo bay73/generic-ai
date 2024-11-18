@@ -1,5 +1,6 @@
 package com.bay.aiclient.api.cerebras
 
+import com.bay.aiclient.domain.ResponseFormat
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -7,6 +8,7 @@ data class CerebrasHttpChatRequest(
     val messages: List<CerebrasHttpChatMessage>? = null,
     val model: String? = null,
     val max_completion_tokens: Int? = null,
+    val response_format: CerebrasHttpChatResponseFormat? = null,
     val seed: Int? = null,
     val stop: List<String>? = null,
     val temperature: Double? = null,
@@ -18,6 +20,19 @@ data class CerebrasHttpChatMessage(
     val role: String? = null,
     val content: String? = null,
 )
+
+@Serializable
+data class CerebrasHttpChatResponseFormat(
+    val type: String?,
+) {
+    companion object {
+        fun from(genericResponseFormat: ResponseFormat?): CerebrasHttpChatResponseFormat? =
+            when (genericResponseFormat?.type) {
+                null, ResponseFormat.Type.TEXT -> null
+                ResponseFormat.Type.JSON_OBJECT, ResponseFormat.Type.JSON_SCHEMA -> CerebrasHttpChatResponseFormat("json_object")
+            }
+    }
+}
 
 @Serializable
 data class CerebrasHttpChatResponse(

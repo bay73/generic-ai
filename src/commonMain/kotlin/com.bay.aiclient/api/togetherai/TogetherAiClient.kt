@@ -51,6 +51,7 @@ class TogetherAiClient internal constructor(
                 frequency_penalty = request.frequencyPenalty,
                 presence_penalty = request.presencePenalty,
                 seed = request.seed,
+                response_format = TogetherAiHttpChatResponseFormat.from(request.responseFormat),
             )
         return client.runPost("/v1/chat/completions", httpRequest) { result: TogetherAiHttpChatResponse ->
             TogetherAiGenerateTextResponse(
