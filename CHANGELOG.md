@@ -1,5 +1,7 @@
 ## 0.5.2
+> Published 19 Nov 2024
 - support Azure OpenAI service
+- fix minor errors
 
 ## 0.5.1
 - Add default value for maximum tokens parameter in Anthropic AI request
