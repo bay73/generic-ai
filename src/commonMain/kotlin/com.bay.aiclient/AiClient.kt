@@ -2,6 +2,7 @@ package com.bay.aiclient
 
 import com.bay.aiclient.api.ai21.Ai21Client
 import com.bay.aiclient.api.anthropic.AnthropicClient
+import com.bay.aiclient.api.azureopenai.AzureOpenAiClient
 import com.bay.aiclient.api.bedrock.BedrockClient
 import com.bay.aiclient.api.cerebras.CerebrasClient
 import com.bay.aiclient.api.cohere.CohereClient
@@ -34,7 +35,7 @@ abstract class AiClient internal constructor(
     abstract fun textGenerationRequestBuilder(): GenerateTextRequest.Builder
 
     abstract class Builder<T : AiClient>(
-        open var apiAky: String = "",
+        open var apiKey: String = "",
         open var defaultModel: String? = null,
         open var defaultTemperature: Double? = null,
         open var timeout: Duration = 60.seconds,
@@ -55,6 +56,7 @@ abstract class AiClient internal constructor(
             when (clientClass) {
                 Ai21Client::class -> Ai21Client.Builder() as Builder<T>
                 AnthropicClient::class -> AnthropicClient.Builder() as Builder<T>
+                AzureOpenAiClient::class -> AzureOpenAiClient.Builder() as Builder<T>
                 BedrockClient::class -> BedrockClient.Builder() as Builder<T>
                 CerebrasClient::class -> CerebrasClient.Builder() as Builder<T>
                 CohereClient::class -> CohereClient.Builder() as Builder<T>
@@ -83,6 +85,7 @@ abstract class AiClient internal constructor(
     ) {
         AI21(Ai21Client::class),
         ANTHROPIC(AnthropicClient::class),
+        AZURE_OPENAI(AzureOpenAiClient::class),
         BEDROCK(BedrockClient::class),
         CEREBRAS(CerebrasClient::class),
         COHERE(CohereClient::class),

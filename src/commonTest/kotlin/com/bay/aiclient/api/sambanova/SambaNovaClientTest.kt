@@ -88,7 +88,7 @@ class SambaNovaClientTest {
                 SambaNovaClient
                     .Builder()
                     .apply {
-                        apiAky = "fake_key"
+                        apiKey = "fake_key"
                         defaultModel = "test-model"
                         httpEngine = mockEngine
                     }.build()
@@ -134,7 +134,7 @@ class SambaNovaClientTest {
                 SambaNovaClient
                     .Builder()
                     .apply {
-                        apiAky = "fake_key"
+                        apiKey = "fake_key"
                         httpEngine = mockEngine
                     }.build()
 
@@ -188,7 +188,7 @@ class SambaNovaClientTest {
                 SambaNovaClient
                     .Builder()
                     .apply {
-                        apiAky = "fake_key"
+                        apiKey = "fake_key"
                         defaultModel = "default_model"
                         httpEngine = mockEngine
                     }.build()
@@ -236,7 +236,7 @@ class SambaNovaClientTest {
                 SambaNovaClient
                     .Builder()
                     .apply {
-                        apiAky = "fake_key"
+                        apiKey = "fake_key"
                         defaultModel = "default-model"
                         defaultTemperature = 0.66
                         httpEngine = mockEngine

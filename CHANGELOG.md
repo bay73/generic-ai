@@ -1,3 +1,6 @@
+## 0.5.2
+- support Azure OpenAI service
+
 ## 0.5.1
 - Add default value for maximum tokens parameter in Anthropic AI request
 

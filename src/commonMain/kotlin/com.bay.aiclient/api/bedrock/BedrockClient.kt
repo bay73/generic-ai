@@ -43,7 +43,7 @@ class BedrockClient internal constructor(
         override var timeout: Duration = 60.seconds,
     ) : AiClient.Builder<BedrockClient>() {
         override fun build(): BedrockClient =
-            if (apiAky.isBlank()) {
+            if (apiKey.isBlank()) {
                 BedrockClient(credentials, defaultModel, timeout, defaultTemperature)
             } else {
                 throw IllegalStateException("API key is not supported by BedrockClient. Use BedrockClient.Credentials")

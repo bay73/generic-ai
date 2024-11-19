@@ -2,6 +2,7 @@ package com.bay.aiclient
 
 import com.bay.aiclient.api.ai21.Ai21Client
 import com.bay.aiclient.api.anthropic.AnthropicClient
+import com.bay.aiclient.api.azureopenai.AzureOpenAiClient
 import com.bay.aiclient.api.bedrock.BedrockClient
 import com.bay.aiclient.api.cerebras.CerebrasClient
 import com.bay.aiclient.api.cohere.CohereClient
@@ -44,6 +45,25 @@ class AiClientGetTest {
         assertEquals("test-anthropic-model", client.defaultModel)
         assertEquals(0.2, client.defaultTemperature)
         assertEquals(20.seconds, client.timeout)
+    }
+
+    @Test
+    fun getAzureOpenAi_createsRightClient() {
+        val client =
+            AzureOpenAiClient
+                .Builder()
+                .apply {
+                    resourceName = "your-resource-name"
+                    apiKey = "your-api-key"
+                    this.defaultModel = "test-azure-openai-model"
+                    this.defaultTemperature = 0.25
+                    this.timeout = 25.seconds
+                }.build()
+
+        assertIs<AzureOpenAiClient>(client)
+        assertEquals("test-azure-openai-model", client.defaultModel)
+        assertEquals(0.25, client.defaultTemperature)
+        assertEquals(25.seconds, client.timeout)
     }
 
     @Test

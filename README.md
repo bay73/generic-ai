@@ -6,6 +6,7 @@ Easy-to-use generic Kotlin API client for connecting to various AI providers wit
 - [AI21 Lab](https://www.ai21.com/)
 - [Anthropic](https://docs.anthropic.com/en/api/getting-started)
 - [AWS Bedrock](https://docs.aws.amazon.com/bedrock/)
+- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/)
 - [Cerebras](https://inference-docs.cerebras.ai/introduction)
 - [Cohere](https://docs.cohere.com/)
 - [Google Gemini](https://ai.google.dev/gemini-api/docs)
@@ -42,7 +43,7 @@ import com.bay.aiclient.AiClient
 fun getResponse() {
     // Create a client for specified AI provider.
     val client = AiClient.get(AiClient.Type.OPEN_AI) { // Choose provider
-        apiAky = "put your API key here"
+        apiKey = "put your API key here"
         defaultModel = "gpt-4o-mini"    // Choose model
     }
     // Start request to the AI model.
@@ -70,7 +71,7 @@ import com.bay.aiclient.domain.GenerateTextResponse;
 
 getResponse main() throws ExecutionException, InterruptedException {
     AiClient.Builder clientBuilder = AiClient.Companion.getBuilder(AiClient.Type.OPEN_AI); // Choose provider
-    clientBuilder.setApiAky("put your API key here");
+    clientBuilder.setApiKey("put your API key here");
     clientBuilder.setDefaultModel("gpt-4o-mini");       // Choose model
     AiClient client = clientBuilder.build();
     AiClientJava javaClient = new AiClientJava(client);  // Java client uses CompletableFuture
@@ -114,6 +115,7 @@ fun customizeRequest() {
 | AI21 Lab      | ✅    | ✅            |                      |
 | Anthropic     | ✅    |              |                      |
 | AWS Bedrock   | ✅    |              |                      |
+| Azure OpenAI  | ✅    | ✅            | ✅                    |
 | Cerebras      | ✅    | ✅            |                      |
 | Cohere        | ✅    | ✅            | ✅                    |
 | Google Gemini | ✅    | ✅            | ✅                    |
@@ -133,7 +135,7 @@ Some AI providers have additional settings which can be adjusted. To use this yo
 fun getResponseWithSpecificParameters() {
     // Create a client for specified AI provider.
     val client = AiClient.get(CohereClient::class) { // Choose provider
-        apiAky = "put your API key here"
+        apiKey = "put your API key here"
         defaultModel = "command-r"    // Choose model
     }
     // Start request to the AI model.
@@ -146,7 +148,7 @@ fun getResponseWithSpecificParameters() {
 
 ```
 
-### AWS Bedrock authentication 
+### AWS Bedrock authentication
 
 AWS bedrock doesn't support token based authentication. To use it you need to provide special credentials object to the client constructor:
 ```kotlin
@@ -155,12 +157,26 @@ fun getBedrockClient() {
     val credentials = BedrockClient.Credentials("region", true)
     // or 
     val credentials = BedrockClient.Credentials("region", false, "accessKeyId", "secretAccessKey", "sessionToken ")
-    
+
     // Create a client using the credentials provider
     val client = BedrockClient.Builder(creadentals).build()
 }
-    
+
 ```
+
+### Azure OpenAI connection
+
+Azure OpenAI requires the resource name which is used to access services as a part of endpoint. To specify resource name use dedicated client constructor which allow to set the resource name as a string:
+```kotlin
+fun getAzureOpenAiClient() {
+    // Create a client using specific builder
+    val client = AzureOpenAiClient.Builder().apply {
+        resourceName = "your-resource-name"
+        apiKey = "your-api-key"
+    }.build()
+}
+```
+Further usage of this client is the same as for all other AI clients.
 
 ## 💡 Sample application
 

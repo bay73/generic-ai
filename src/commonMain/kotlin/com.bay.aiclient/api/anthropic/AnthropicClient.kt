@@ -9,7 +9,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class AnthropicClient internal constructor(
-    apiAky: String,
+    apiKey: String,
     override var defaultModel: String? = null,
     override var defaultTemperature: Double? = null,
     override var timeout: Duration = 60.seconds,
@@ -81,19 +81,19 @@ class AnthropicClient internal constructor(
         textGenerationRequestBuilder().also { builder -> this.copyTo(builder) }.build()
 
     class Builder(
-        override var apiAky: String = "",
+        override var apiKey: String = "",
         override var defaultModel: String? = null,
         override var defaultTemperature: Double? = null,
         override var timeout: Duration = 60.seconds,
         override var httpLogLevel: LogLevel = LogLevel.NONE,
         override var httpEngine: HttpClientEngine? = null,
     ) : AiClient.Builder<AnthropicClient>() {
-        override fun build(): AnthropicClient = AnthropicClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel, httpEngine)
+        override fun build(): AnthropicClient = AnthropicClient(apiKey, defaultModel, defaultTemperature, timeout, httpLogLevel, httpEngine)
     }
 
     private val client =
         AiHttpClient("https://api.anthropic.com", timeout, httpLogLevel, httpEngine) {
-            append("x-api-key", apiAky)
+            append("x-api-key", apiKey)
             append("anthropic-version", "2023-06-01")
         }
 }

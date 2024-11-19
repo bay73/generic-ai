@@ -1,14 +1,12 @@
-package com.bay.aiclient.api.togetherai
+package com.bay.aiclient.api.azureopenai
 
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.domain.ResponseFormat
 import com.bay.aiclient.domain.TextMessage
 import com.bay.aiclient.utils.MockHttpEngine
-import com.bay.aiclient.utils.RequestMatcher.Companion.getRequestTo
 import com.bay.aiclient.utils.RequestMatcher.Companion.header
 import com.bay.aiclient.utils.RequestMatcher.Companion.jsonBody
 import com.bay.aiclient.utils.RequestMatcher.Companion.postRequestTo
-import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
@@ -17,63 +15,23 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class TogetherAiClientTest {
+class AzureOpenAiClientTest {
     @Test
-    fun listModels_parsesResponse() =
+    fun listModels_returnsStaticList() =
         runTest {
-            val mockEngine =
-                MockHttpEngine()
-                    .expect(getRequestTo("https://api.together.xyz/v1/models"))
-                    .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
-                    .andRespondOk(
-                        """[
-                            {
-                                "id":"codellama/CodeLlama-34b-Instruct-hf",
-                                "object":"model",
-                                "created":1692898122,
-                                "type":"chat",
-                                "running":false,
-                                "display_name":"Code Llama Instruct (34B)",
-                                "organization":"Meta",
-                                "license":"LLAMA 2 Community license Agreement (Meta)",
-                                "context_length":16384,
-                                "pricing": {
-                                    "hourly": 0,
-                                    "input": 0.3,
-                                    "output": 0.3,
-                                    "base": 0,
-                                    "finetune": 0
-                                }
-                            },
-                            {
-                                "id":"upstage/SOLAR-10.7B-Instruct-v1.0",
-                                "object":"model",
-                                "created":1702851922,
-                                "type":"chat",
-                                "running":false,
-                                "display_name":"Upstage SOLAR Instruct v1 (11B)",
-                                "organization":"upstage",
-                                "license":"cc-by-nc-4.0",
-                                "context_length":4096
-                            }
-                        ]
-                        """.trimMargin(),
-                    )
-
-            val client =
-                TogetherAiClient
-                    .Builder()
-                    .apply {
-                        apiKey = "fake_key"
-                        defaultModel = "test-model"
-                        httpEngine = mockEngine
-                    }.build()
-
             val expectedModels =
                 listOf(
-                    TogetherAiModel("codellama/CodeLlama-34b-Instruct-hf", "Code Llama Instruct (34B)", "chat", 1692898122),
-                    TogetherAiModel("upstage/SOLAR-10.7B-Instruct-v1.0", "Upstage SOLAR Instruct v1 (11B)", "chat", 1702851922),
+                    AzureOpenAiModel("gpt-4o", "gpt-4o"),
+                    AzureOpenAiModel("gpt-4o-mini", "gpt-4o-mini"),
+                    AzureOpenAiModel("gpt-4", "gpt-4"),
+                    AzureOpenAiModel("gpt-4-32k", "gpt-4-32k"),
+                    AzureOpenAiModel("gpt-4-32k", "gpt-4-32k"),
+                    AzureOpenAiModel("gpt-4-32k", "gpt-4-32k"),
+                    AzureOpenAiModel("gpt-35-turbo", "gpt-35-turbo"),
+                    AzureOpenAiModel("babbage-002", "babbage-002"),
                 )
+
+            val client = AzureOpenAiClient.Builder().apply { resourceName = "our-resource" }.build()
 
             val result = client.models()
 
@@ -87,49 +45,61 @@ class TogetherAiClientTest {
         runTest {
             val mockEngine =
                 MockHttpEngine()
-                    .expect(postRequestTo("https://api.together.xyz/v1/chat/completions"))
-                    .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
+                    .expect(
+                        postRequestTo(
+                            "https://our-resource.openai.azure.com/openai/deployments/test-model/chat/completions?api-version=2024-10-21",
+                        ),
+                    ).expect(header("api-key", "fake_key"))
                     .expect(
                         jsonBody(
                             """{
                                 "messages":[
                                     {"role":"user","content":"Question"}
-                                ],
-                                "model":"test-model"
+                                ]
                             }""",
                         ),
                     ).andRespondOk(
                         """{
-                            "id": "8e20a47468a86d7f-ABC",
+                            "id": "chatcmpl-ATBu0ntPVD82UilqNZlgZTTfhJ0eu",
                             "object": "chat.completion",
                             "created": 1731520628,
-                            "model": "meta-llama/Meta-Llama-3-70B-Instruct-Turbo",
-                            "prompt": [],
+                            "model": "gpt-4o-2024-08-06",
                             "choices": [
                                 {
-                                    "finish_reason": "eos",
-                                    "seed": 15862945632254988000,
-                                    "logprobs": null,
                                     "index": 0,
                                     "message": {
-                                        "role": "assistant",
-                                        "content": "The answer, of course, is 42.",
-                                        "tool_calls": []
-                                    }
+                                    "role": "assistant",
+                                        "content": "The answer to the Ultimate Question of Life is famously known to be the number 42.",
+                                        "refusal": null
+                                    },
+                                   "logprobs": null,
+                                   "finish_reason": "stop"
                                 }
                             ],
                             "usage": {
-                                "prompt_tokens": 66,
-                                "completion_tokens": 256,
-                                "total_tokens": 322
-                            }
+                                "prompt_tokens": 65,
+                                "completion_tokens": 59,
+                                "total_tokens": 124,
+                                "prompt_tokens_details": {
+                                    "cached_tokens": 0,
+                                    "audio_tokens": 0
+                                },
+                                "completion_tokens_details": {
+                                    "reasoning_tokens": 0,
+                                    "audio_tokens": 0,
+                                    "accepted_prediction_tokens": 0,
+                                    "rejected_prediction_tokens": 0
+                                }
+                            },
+                            "system_fingerprint": "fp_159d8341cc"
                         }""",
                     )
 
             val client =
-                TogetherAiClient
+                AzureOpenAiClient
                     .Builder()
                     .apply {
+                        resourceName = "our-resource"
                         apiKey = "fake_key"
                         defaultModel = "test-model"
                         httpEngine = mockEngine
@@ -139,10 +109,11 @@ class TogetherAiClientTest {
 
             assertTrue(result.isSuccess)
             val response = result.getOrThrow()
-            assertEquals("The answer, of course, is 42.", response.response)
-            assertEquals(66, response.usage?.inputTokens)
-            assertEquals(256, response.usage?.outputTokens)
-            assertEquals(322, response.usage?.totalTokens)
+            assertEquals("The answer to the Ultimate Question of Life is famously known to be the number 42.", response.response)
+            assertEquals(65, response.usage?.inputTokens)
+            assertEquals(59, response.usage?.outputTokens)
+            assertEquals(124, response.usage?.totalTokens)
+            assertEquals("stop", response.choices?.first()?.finishReason)
         }
 
     @Test
@@ -150,43 +121,40 @@ class TogetherAiClientTest {
         runTest {
             val mockEngine =
                 MockHttpEngine()
-                    .expect(postRequestTo("https://api.together.xyz/v1/chat/completions"))
-                    .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
+                    .expect(
+                        postRequestTo(
+                            "https://our-resource.openai.azure.com/openai/deployments/test-model/chat/completions?api-version=2024-10-21",
+                        ),
+                    ).expect(header("api-key", "fake_key"))
                     .expect(
                         jsonBody(
                             """{
+                                "temperature":0.33,
+                                "top_p":0.55,
+                                "stop":["bad word","stop word"],
+                                "max_completion_tokens":1000,
                                 "messages":[
                                     {"role":"user","content":"first question"},
                                     {"role":"assistant","content":"first answer"},
                                     {"role":"system","content":"Instructions"},
-                                    {"role":"user","content":"Question"}
-                                ],
-                                "model":"test-model",
-                                "max_tokens":1000,
-                                "stop":["bad word","stop word"],
-                                "temperature":0.33,
-                                "top_p":0.55,
-                                "top_k":5,
-                                "repetition_penalty":0.3,
-                                "presence_penalty":0.1,
-                                "frequency_penalty":0.5,
-                                "seed":10,
+                                    {"role":"user","content":"Question"}],
                                 "response_format":{"type":"json_object"}
                             }""",
                         ),
                     ).andRespondOk("{ }")
 
             val client =
-                TogetherAiClient
+                AzureOpenAiClient
                     .Builder()
                     .apply {
+                        resourceName = "our-resource"
                         apiKey = "fake_key"
                         httpEngine = mockEngine
                     }.build()
 
             val result =
                 client.generateText(
-                    TogetherAiGenerateTextRequest
+                    AzureOpenAiGenerateTextRequest
                         .builder()
                         .apply {
                             model = "test-model"
@@ -198,11 +166,6 @@ class TogetherAiClientTest {
                             stopSequences = listOf("bad word", "stop word")
                             temperature = 0.33
                             topP = 0.55
-                            topK = 5
-                            seed = 10
-                            repetitionPenalty = 0.3
-                            frequencyPenalty = 0.5
-                            presencePenalty = 0.1
                         }.build(),
                 )
 
@@ -214,30 +177,34 @@ class TogetherAiClientTest {
         runTest {
             val mockEngine =
                 MockHttpEngine()
-                    .expect(postRequestTo("https://api.together.xyz/v1/chat/completions"))
-                    .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
+                    .expect(
+                        postRequestTo(
+                            "https://our-resource.openai.azure.com/openai/deployments/generic-model/chat/completions?api-version=2024-10-21",
+                        ),
+                    ).expect(header("api-key", "fake_key"))
                     .expect(
                         jsonBody(
                             """{
+                                "temperature":0.66,
+                                "top_p":0.77,
+                                "stop":["bad","stop"],
+                                "max_completion_tokens":2000,
                                 "messages":[
                                     {"role":"user","content":"Question A"},
                                     {"role":"assistant","content":"Answer A"},
                                     {"role":"system","content":"System Instructions"},
                                     {"role":"user","content":"Generic Question"}
                                 ],
-                                "model":"generic-model",
-                                "max_tokens":2000,
-                                "stop":["bad","stop"],
-                                "temperature":0.66,
-                                "top_p":0.77
+                                "response_format":{"type":"text"}
                             }""",
                         ),
                     ).andRespondOk("{ }")
 
             val client =
-                TogetherAiClient
+                AzureOpenAiClient
                     .Builder()
                     .apply {
+                        resourceName = "our-resource"
                         apiKey = "fake_key"
                         defaultModel = "default_model"
                         httpEngine = mockEngine
@@ -268,24 +235,27 @@ class TogetherAiClientTest {
         runTest {
             val mockEngine =
                 MockHttpEngine()
-                    .expect(postRequestTo("https://api.together.xyz/v1/chat/completions"))
-                    .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
+                    .expect(
+                        postRequestTo(
+                            "https://our-resource.openai.azure.com/openai/deployments/default-model/chat/completions?api-version=2024-10-21",
+                        ),
+                    ).expect(header("api-key", "fake_key"))
                     .expect(
                         jsonBody(
                             """{
+                                "temperature":0.66,
                                 "messages":[
                                     {"role":"user","content":"Question"}
-                                ],
-                                "model":"default-model",
-                                "temperature":0.66
+                                ]
                             }""",
                         ),
                     ).andRespondOk("{}")
 
             val client =
-                TogetherAiClient
+                AzureOpenAiClient
                     .Builder()
                     .apply {
+                        resourceName = "our-resource"
                         apiKey = "fake_key"
                         defaultModel = "default-model"
                         defaultTemperature = 0.66
@@ -353,33 +323,40 @@ class TogetherAiClientTest {
                 )
             val mockEngine =
                 MockHttpEngine()
-                    .expect(postRequestTo("https://api.together.xyz/v1/chat/completions"))
-                    .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
+                    .expect(
+                        postRequestTo(
+                            "https://our-resource.openai.azure.com/openai/deployments/generic-model/chat/completions?api-version=2024-10-21",
+                        ),
+                    ).expect(header("api-key", "fake_key"))
                     .expect(
                         jsonBody(
                             """{
                                 "messages":[
                                     {"role":"user","content":"Generic Question"}
                                 ],
-                                "model":"generic-model",
                                 "response_format":{
-                                    "type":"json_object",
-                                    "schema":{
-                                        "type":"object",
-                                        "properties":{
-                                            "answers":{
-                                                "type":"array",
-                                                "items":{
-                                                    "type":"object",
-                                                    "properties":{
-                                                        "text":{"type":"string"},
-                                                        "source":{"type":"string"}
-                                                    },
-                                                    "required":["text"]
+                                    "type":"json_schema",
+                                    "json_schema":{
+                                        "name":"response_format",
+                                        "description":null,
+                                        "strict":false,
+                                        "schema":{
+                                            "type":"object",
+                                            "properties":{
+                                                "answers":{
+                                                    "type":"array",
+                                                    "items":{
+                                                        "type":"object",
+                                                        "properties":{
+                                                            "text":{"type":"string"},
+                                                            "source":{"type":"string"}
+                                                        },
+                                                        "required":["text"]
+                                                    }
                                                 }
-                                            }
-                                        },
-                                        "required":["answers"]
+                                            },
+                                            "required":["answers"]
+                                        }
                                     }
                                 }
                             }""",
@@ -387,9 +364,10 @@ class TogetherAiClientTest {
                     ).andRespondOk("{ }")
 
             val client =
-                TogetherAiClient
+                AzureOpenAiClient
                     .Builder()
                     .apply {
+                        resourceName = "our-resource"
                         apiKey = "fake_key"
                         defaultModel = "default_model"
                         httpEngine = mockEngine

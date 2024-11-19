@@ -46,7 +46,8 @@ class AnthropicClientTest {
                         jsonBody(
                             """{
                                 "messages":[{"role":"user", "content":"Question"}],
-                                "model":"test-model"
+                                "model":"test-model",
+                                "max_tokens":4096
                             }""",
                         ),
                     ).andRespondOk(
@@ -74,7 +75,7 @@ class AnthropicClientTest {
                 AnthropicClient
                     .Builder()
                     .apply {
-                        apiAky = "fake_key"
+                        apiKey = "fake_key"
                         defaultModel = "test-model"
                         httpEngine = mockEngine
                     }.build()
@@ -120,7 +121,7 @@ class AnthropicClientTest {
                 AnthropicClient
                     .Builder()
                     .apply {
-                        apiAky = "fake_key"
+                        apiKey = "fake_key"
                         httpEngine = mockEngine
                     }.build()
 
@@ -170,7 +171,7 @@ class AnthropicClientTest {
                 AnthropicClient
                     .Builder()
                     .apply {
-                        apiAky = "fake_key"
+                        apiKey = "fake_key"
                         defaultModel = "default_model"
                         httpEngine = mockEngine
                     }.build()
@@ -208,6 +209,7 @@ class AnthropicClientTest {
                             """{
                                 "messages":[{"role":"user", "content":"Question"}],
                                 "model":"default-model",
+                                "max_tokens":4096,
                                 "temperature":0.66
                             }""",
                         ),
@@ -217,7 +219,7 @@ class AnthropicClientTest {
                 AnthropicClient
                     .Builder()
                     .apply {
-                        apiAky = "fake_key"
+                        apiKey = "fake_key"
                         defaultModel = "default-model"
                         defaultTemperature = 0.66
                         httpEngine = mockEngine

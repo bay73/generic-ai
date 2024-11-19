@@ -10,7 +10,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class TogetherAiClient internal constructor(
-    apiAky: String,
+    apiKey: String,
     override var defaultModel: String? = null,
     override var defaultTemperature: Double? = null,
     override var timeout: Duration = 60.seconds,
@@ -22,8 +22,7 @@ class TogetherAiClient internal constructor(
             TogetherAiModelsResponse(
                 result.map { model ->
                     TogetherAiModel(id = model.id ?: "", name = model.display_name ?: "", type = model.type, created = model.created)
-                }
-                    ?: emptyList(),
+                },
             )
         }
 
@@ -87,7 +86,7 @@ class TogetherAiClient internal constructor(
         textGenerationRequestBuilder().also { builder -> this.copyTo(builder) }.build()
 
     class Builder(
-        override var apiAky: String = "",
+        override var apiKey: String = "",
         override var defaultModel: String? = null,
         override var defaultTemperature: Double? = null,
         override var timeout: Duration = 60.seconds,
@@ -95,11 +94,11 @@ class TogetherAiClient internal constructor(
         override var httpEngine: HttpClientEngine? = null,
     ) : AiClient.Builder<TogetherAiClient>() {
         override fun build(): TogetherAiClient =
-            TogetherAiClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel, httpEngine)
+            TogetherAiClient(apiKey, defaultModel, defaultTemperature, timeout, httpLogLevel, httpEngine)
     }
 
     private val client =
         AiHttpClient("https://api.together.xyz", timeout, httpLogLevel, httpEngine) {
-            append(HttpHeaders.Authorization, "Bearer $apiAky")
+            append(HttpHeaders.Authorization, "Bearer $apiKey")
         }
 }

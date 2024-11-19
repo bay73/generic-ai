@@ -10,7 +10,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class CohereClient internal constructor(
-    apiAky: String,
+    apiKey: String,
     override var defaultModel: String? = null,
     override var defaultTemperature: Double? = null,
     override var timeout: Duration = 60.seconds,
@@ -73,18 +73,18 @@ class CohereClient internal constructor(
         textGenerationRequestBuilder().also { builder -> this.copyTo(builder) }.build()
 
     class Builder(
-        override var apiAky: String = "",
+        override var apiKey: String = "",
         override var defaultModel: String? = null,
         override var defaultTemperature: Double? = null,
         override var timeout: Duration = 60.seconds,
         override var httpLogLevel: LogLevel = LogLevel.NONE,
         override var httpEngine: HttpClientEngine? = null,
     ) : AiClient.Builder<CohereClient>() {
-        override fun build(): CohereClient = CohereClient(apiAky, defaultModel, defaultTemperature, timeout, httpLogLevel, httpEngine)
+        override fun build(): CohereClient = CohereClient(apiKey, defaultModel, defaultTemperature, timeout, httpLogLevel, httpEngine)
     }
 
     private val client =
         AiHttpClient("https://api.cohere.com", timeout, httpLogLevel, httpEngine) {
-            append(HttpHeaders.Authorization, "Bearer $apiAky")
+            append(HttpHeaders.Authorization, "Bearer $apiKey")
         }
 }

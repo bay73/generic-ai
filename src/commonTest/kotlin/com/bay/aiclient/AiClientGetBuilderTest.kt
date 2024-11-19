@@ -2,6 +2,7 @@ package com.bay.aiclient
 
 import com.bay.aiclient.api.ai21.Ai21Client
 import com.bay.aiclient.api.anthropic.AnthropicClient
+import com.bay.aiclient.api.azureopenai.AzureOpenAiClient
 import com.bay.aiclient.api.bedrock.BedrockClient
 import com.bay.aiclient.api.cerebras.CerebrasClient
 import com.bay.aiclient.api.cohere.CohereClient
@@ -26,6 +27,13 @@ class AiClientGetBuilderTest {
         val builder = AiClient.getBuilder(AiClient.Type.ANTHROPIC)
 
         assertIs<AnthropicClient.Builder>(builder)
+    }
+
+    @Test
+    fun getAzureOpenAi_createsRightBuilder() {
+        val builder = AiClient.getBuilder(AiClient.Type.AZURE_OPENAI)
+
+        assertIs<AzureOpenAiClient.Builder>(builder)
     }
 
     @Test
