@@ -132,11 +132,11 @@ class AzureOpenAiClientTest {
                                 "temperature":0.33,
                                 "top_p":0.55,
                                 "stop":["bad word","stop word"],
-                                "max_completion_tokens":1000,
+                                "max_tokens":1000,
                                 "messages":[
+                                    {"role":"system","content":"Instructions"},
                                     {"role":"user","content":"first question"},
                                     {"role":"assistant","content":"first answer"},
-                                    {"role":"system","content":"Instructions"},
                                     {"role":"user","content":"Question"}],
                                 "response_format":{"type":"json_object"}
                             }""",
@@ -188,11 +188,11 @@ class AzureOpenAiClientTest {
                                 "temperature":0.66,
                                 "top_p":0.77,
                                 "stop":["bad","stop"],
-                                "max_completion_tokens":2000,
+                                "max_tokens":2000,
                                 "messages":[
+                                    {"role":"system","content":"System Instructions"},
                                     {"role":"user","content":"Question A"},
                                     {"role":"assistant","content":"Answer A"},
-                                    {"role":"system","content":"System Instructions"},
                                     {"role":"user","content":"Generic Question"}
                                 ],
                                 "response_format":{"type":"text"}

@@ -144,7 +144,7 @@ class CohereClientTest {
                                 "preamble":"Instructions",
                                 "chat_history":[
                                     {"role":"user","message":"first question"},
-                                    {"role":"assistant","message":"first answer"}
+                                    {"role":"chatbot","message":"first answer"}
                                 ],
                                 "temperature":0.33,
                                 "max_tokens":1000,
@@ -176,7 +176,7 @@ class CohereClientTest {
                             prompt = "Question"
                             systemInstructions = "Instructions"
                             responseFormat = ResponseFormat.JSON_OBJECT
-                            chatHistory = listOf(TextMessage("user", "first question"), TextMessage("assistant", "first answer"))
+                            chatHistory = listOf(TextMessage("user", "first question"), TextMessage("chatbot", "first answer"))
                             maxOutputTokens = 1000
                             stopSequences = listOf("bad word", "stop word")
                             temperature = 0.33
@@ -208,7 +208,7 @@ class CohereClientTest {
                                 "preamble":"System Instructions",
                                 "chat_history":[
                                     {"role":"user","message":"Question A"},
-                                    {"role":"assistant","message":"Answer A"}],
+                                    {"role":"chatbot","message":"Answer A"}],
                                 "temperature":0.66,
                                 "max_tokens":2000,
                                 "p":0.77,
@@ -235,7 +235,7 @@ class CohereClientTest {
                             prompt = "Generic Question"
                             systemInstructions = "System Instructions"
                             responseFormat = ResponseFormat.TEXT
-                            chatHistory = listOf(TextMessage("user", "Question A"), TextMessage("assistant", "Answer A"))
+                            chatHistory = listOf(TextMessage("user", "Question A"), TextMessage("chatbot", "Answer A"))
                             maxOutputTokens = 2000
                             stopSequences = listOf("bad", "stop")
                             temperature = 0.66

@@ -37,12 +37,14 @@ class MistralClient internal constructor(
         generateText(request.toMistralRequest())
 
     suspend fun generateText(request: MistralGenerateTextRequest): Result<MistralGenerateTextResponse> {
+        val systemMessages =
+            if (request.systemInstructions?.isNotBlank() == true) {
+                listOf(MistralHttpChatMessage(role = "system", request.systemInstructions))
+            } else {
+                emptyList()
+            }
         val historyMessages = request.chatHistory?.map { MistralHttpChatMessage(it.role, it.content) } ?: emptyList()
-        val newMessages = mutableListOf<MistralHttpChatMessage>()
-        if (request.systemInstructions?.isNotBlank() == true) {
-            newMessages.add(MistralHttpChatMessage(role = "system", request.systemInstructions))
-        }
-        newMessages.add(MistralHttpChatMessage(role = "user", request.prompt))
+        val newMessages = listOf(MistralHttpChatMessage(role = "user", request.prompt))
         val httpRequest =
             MistralHttpChatRequest(
                 model = request.model,
@@ -52,7 +54,7 @@ class MistralClient internal constructor(
                 stream = false,
                 stop = request.stopSequences,
                 random_seed = request.seed,
-                messages = historyMessages + newMessages,
+                messages = systemMessages + historyMessages + newMessages,
                 response_format = MistralHttpChatResponseFormat.from(request.responseFormat),
                 presence_penalty = request.presencePenalty,
                 frequency_penalty = request.frequencyPenalty,

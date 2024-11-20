@@ -89,9 +89,9 @@ class Ai21ClientTest {
                             """{
                                 "model":"test-model",
                                 "messages":[
+                                    {"role":"system", "content":"Instructions"},
                                     {"role":"user", "content":"first question"},
                                     {"role":"assistant", "content":"first answer"},
-                                    {"role":"system", "content":"Instructions"},
                                     {"role":"user", "content":"Question"}
                                 ],
                                 "response_format":{"type":"json_object"},
@@ -138,9 +138,9 @@ class Ai21ClientTest {
                             """{
                                 "model":"generic-model",
                                 "messages":[
+                                    {"role":"system", "content":"Instructions"},
                                     {"role":"user", "content":"Question A"},
                                     {"role":"assistant", "content":"Answer A"},
-                                    {"role":"system", "content":"Instructions"},
                                     {"role":"user", "content":"Generic Question"}
                                 ],
                                 "max_tokens":2000,

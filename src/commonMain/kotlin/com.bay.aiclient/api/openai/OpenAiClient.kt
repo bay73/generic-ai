@@ -29,16 +29,18 @@ class OpenAiClient internal constructor(
         generateText(request.toOpenAiRequest())
 
     suspend fun generateText(request: OpenAiGenerateTextRequest): Result<OpenAiGenerateTextResponse> {
+        val systemMessages =
+            if (request.systemInstructions?.isNotBlank() == true) {
+                listOf(OpenAiHttpChatMessage(role = "system", request.systemInstructions))
+            } else {
+                emptyList()
+            }
         val historyMessages = request.chatHistory?.map { OpenAiHttpChatMessage(it.role, it.content) } ?: emptyList()
-        val newMessages = mutableListOf<OpenAiHttpChatMessage>()
-        if (request.systemInstructions?.isNotBlank() == true) {
-            newMessages.add(OpenAiHttpChatMessage(role = "system", request.systemInstructions))
-        }
-        newMessages.add(OpenAiHttpChatMessage(role = "user", request.prompt))
+        val newMessages = listOf(OpenAiHttpChatMessage(role = "user", request.prompt))
 
         val httpRequest =
             OpenAiHttpChatRequest(
-                messages = historyMessages + newMessages,
+                messages = systemMessages + historyMessages + newMessages,
                 model = request.model,
                 frequency_penalty = request.frequencyPenalty,
                 max_completion_tokens = request.maxOutputTokens,

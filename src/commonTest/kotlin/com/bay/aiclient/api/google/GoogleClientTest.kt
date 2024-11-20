@@ -165,7 +165,7 @@ class GoogleClientTest {
                             """{
                                 "contents":[
                                     {"role":"user","parts":[{"text":"first question"}]},
-                                    {"role":"assistant","parts":[{"text":"first answer"}]},
+                                    {"role":"model","parts":[{"text":"first answer"}]},
                                     {"role":"user","parts":[{"text":"Question"}]}
                                 ],
                                 "systemInstruction":{"parts":[{"text":"Instructions"}]},
@@ -200,7 +200,7 @@ class GoogleClientTest {
                             prompt = "Question"
                             systemInstructions = "Instructions"
                             responseFormat = ResponseFormat.JSON_OBJECT
-                            chatHistory = listOf(TextMessage("user", "first question"), TextMessage("assistant", "first answer"))
+                            chatHistory = listOf(TextMessage("user", "first question"), TextMessage("model", "first answer"))
                             maxOutputTokens = 1000
                             stopSequences = listOf("bad word", "stop word")
                             temperature = 0.33
@@ -226,7 +226,7 @@ class GoogleClientTest {
                             """{
                                 "contents":[
                                     {"role":"user","parts":[{"text":"Question A"}]},
-                                    {"role":"assistant","parts":[{"text":"Answer A"}]},
+                                    {"role":"model","parts":[{"text":"Answer A"}]},
                                     {"role":"user","parts":[{"text":"Generic Question"}]}
                                 ],
                                 "systemInstruction":{"parts":[{"text":"System Instructions"}]},
@@ -259,7 +259,7 @@ class GoogleClientTest {
                             prompt = "Generic Question"
                             systemInstructions = "System Instructions"
                             responseFormat = ResponseFormat.TEXT
-                            chatHistory = listOf(TextMessage("user", "Question A"), TextMessage("assistant", "Answer A"))
+                            chatHistory = listOf(TextMessage("user", "Question A"), TextMessage("model", "Answer A"))
                             maxOutputTokens = 2000
                             stopSequences = listOf("bad", "stop")
                             temperature = 0.66

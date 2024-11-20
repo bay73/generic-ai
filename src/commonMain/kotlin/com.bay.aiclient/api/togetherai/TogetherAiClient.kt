@@ -30,16 +30,18 @@ class TogetherAiClient internal constructor(
         generateText(request.toTogetherAiRequest())
 
     suspend fun generateText(request: TogetherAiGenerateTextRequest): Result<TogetherAiGenerateTextResponse> {
+        val systemMessages =
+            if (request.systemInstructions?.isNotBlank() == true) {
+                listOf(TogetherAiHttpChatMessage(role = "system", request.systemInstructions))
+            } else {
+                emptyList()
+            }
         val historyMessages = request.chatHistory?.map { TogetherAiHttpChatMessage(it.role, it.content) } ?: emptyList()
-        val newMessages = mutableListOf<TogetherAiHttpChatMessage>()
-        if (request.systemInstructions?.isNotBlank() == true) {
-            newMessages.add(TogetherAiHttpChatMessage(role = "system", request.systemInstructions))
-        }
-        newMessages.add(TogetherAiHttpChatMessage(role = "user", request.prompt))
+        val newMessages = listOf(TogetherAiHttpChatMessage(role = "user", request.prompt))
 
         val httpRequest =
             TogetherAiHttpChatRequest(
-                messages = historyMessages + newMessages,
+                messages = systemMessages + historyMessages + newMessages,
                 model = request.model,
                 max_tokens = request.maxOutputTokens,
                 stop = request.stopSequences,

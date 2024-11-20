@@ -36,16 +36,18 @@ class SambaNovaClient internal constructor(
         generateText(request.toSambaNovaRequest())
 
     suspend fun generateText(request: SambaNovaGenerateTextRequest): Result<SambaNovaGenerateTextResponse> {
+        val systemMessages =
+            if (request.systemInstructions?.isNotBlank() == true) {
+                listOf(SambaNovaHttpChatMessage(role = "system", request.systemInstructions))
+            } else {
+                emptyList()
+            }
         val historyMessages = request.chatHistory?.map { SambaNovaHttpChatMessage(it.role, it.content) } ?: emptyList()
-        val newMessages = mutableListOf<SambaNovaHttpChatMessage>()
-        if (request.systemInstructions?.isNotBlank() == true) {
-            newMessages.add(SambaNovaHttpChatMessage(role = "system", request.systemInstructions))
-        }
-        newMessages.add(SambaNovaHttpChatMessage(role = "user", request.prompt))
+        val newMessages = listOf(SambaNovaHttpChatMessage(role = "user", request.prompt))
         val httpRequest =
             SambaNovaHttpChatRequest(
                 model = request.model,
-                messages = historyMessages + newMessages,
+                messages = systemMessages + historyMessages + newMessages,
                 max_tokens = request.maxOutputTokens,
                 temperature = request.temperature,
                 top_p = request.topP,

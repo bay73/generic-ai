@@ -10,7 +10,7 @@ data class AzureOpenAiHttpChatRequest(
     val top_p: Double? = null,
     val stream: Boolean? = false,
     val stop: List<String>? = null,
-    val max_completion_tokens: Int? = null,
+    val max_tokens: Int? = null,
     val presence_penalty: Double? = null,
     val frequency_penalty: Double? = null,
     val messages: List<AzureOpenAiHttpChatMessage>? = null,

@@ -164,9 +164,9 @@ class MistralClientTest {
                                 "max_tokens":1000,
                                 "stop":["bad word","stop word"],
                                 "messages":[
+                                    {"role":"system","content":"Instructions"},
                                     {"role":"user","content":"first question"},
                                     {"role":"assistant","content":"first answer"},
-                                    {"role":"system","content":"Instructions"},
                                     {"role":"user","content":"Question"}
                                 ],
                                 "response_format":{"type":"json_object"}
@@ -218,9 +218,9 @@ class MistralClientTest {
                                 "max_tokens":2000,
                                 "stop":["bad","stop"],
                                 "messages":[
+                                    {"role":"system","content":"System Instructions"},
                                     {"role":"user","content":"Question A"},
                                     {"role":"assistant","content":"Answer A"},
-                                    {"role":"system","content":"System Instructions"},
                                     {"role":"user","content":"Generic Question"}
                                 ],
                                 "response_format":{"type":"text"}

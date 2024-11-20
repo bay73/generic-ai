@@ -37,12 +37,14 @@ class AzureOpenAiClient internal constructor(
         generateText(request.toAzureOpenAiRequest())
 
     suspend fun generateText(request: AzureOpenAiGenerateTextRequest): Result<AzureOpenAiGenerateTextResponse> {
+        val systemMessages =
+            if (request.systemInstructions?.isNotBlank() == true) {
+                listOf(AzureOpenAiHttpChatMessage(role = "system", request.systemInstructions))
+            } else {
+                emptyList()
+            }
         val historyMessages = request.chatHistory?.map { AzureOpenAiHttpChatMessage(it.role, it.content) } ?: emptyList()
-        val newMessages = mutableListOf<AzureOpenAiHttpChatMessage>()
-        if (request.systemInstructions?.isNotBlank() == true) {
-            newMessages.add(AzureOpenAiHttpChatMessage(role = "system", request.systemInstructions))
-        }
-        newMessages.add(AzureOpenAiHttpChatMessage(role = "user", request.prompt))
+        val newMessages = listOf(AzureOpenAiHttpChatMessage(role = "user", request.prompt))
 
         val httpRequest =
             AzureOpenAiHttpChatRequest(
@@ -50,10 +52,10 @@ class AzureOpenAiClient internal constructor(
                 top_p = request.topP,
                 stream = false,
                 stop = request.stopSequences,
-                max_completion_tokens = request.maxOutputTokens,
+                max_tokens = request.maxOutputTokens,
                 presence_penalty = request.presencePenalty,
                 frequency_penalty = request.frequencyPenalty,
-                messages = historyMessages + newMessages,
+                messages = systemMessages + historyMessages + newMessages,
                 response_format = AzureOpenAiHttpChatResponseFormat.from(request.responseFormat),
                 seed = request.seed,
             )

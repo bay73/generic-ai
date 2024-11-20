@@ -35,16 +35,18 @@ class CerebrasClient internal constructor(
         generateText(request.toCerebrasRequest())
 
     suspend fun generateText(request: CerebrasGenerateTextRequest): Result<CerebrasGenerateTextResponse> {
+        val systemMessages =
+            if (request.systemInstructions?.isNotBlank() == true) {
+                listOf(CerebrasHttpChatMessage(role = "system", request.systemInstructions))
+            } else {
+                emptyList()
+            }
         val historyMessages = request.chatHistory?.map { CerebrasHttpChatMessage(it.role, it.content) } ?: emptyList()
-        val newMessages = mutableListOf<CerebrasHttpChatMessage>()
-        if (request.systemInstructions?.isNotBlank() == true) {
-            newMessages.add(CerebrasHttpChatMessage(role = "system", request.systemInstructions))
-        }
-        newMessages.add(CerebrasHttpChatMessage(role = "user", request.prompt))
+        val newMessages = listOf(CerebrasHttpChatMessage(role = "user", request.prompt))
         val httpRequest =
             CerebrasHttpChatRequest(
                 model = request.model,
-                messages = historyMessages + newMessages,
+                messages = systemMessages + historyMessages + newMessages,
                 max_completion_tokens = request.maxOutputTokens,
                 response_format = CerebrasHttpChatResponseFormat.from(request.responseFormat),
                 seed = request.seed,

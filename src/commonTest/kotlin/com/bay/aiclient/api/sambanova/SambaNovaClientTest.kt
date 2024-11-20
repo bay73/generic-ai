@@ -115,9 +115,9 @@ class SambaNovaClientTest {
                         jsonBody(
                             """{
                                 "messages":[
+                                    {"role":"system","content":"Instructions"},
                                     {"role":"user","content":"first question"},
                                     {"role":"assistant","content":"first answer"},
-                                    {"role":"system","content":"Instructions"},
                                     {"role":"user","content":"Question"}
                                 ],
                                 "model":"test-model",
@@ -170,9 +170,9 @@ class SambaNovaClientTest {
                         jsonBody(
                             """{
                                 "messages":[
+                                    {"role":"system","content":"System Instructions"},
                                     {"role":"user","content":"Question A"},
                                     {"role":"assistant","content":"Answer A"},
-                                    {"role":"system","content":"System Instructions"},
                                     {"role":"user","content":"Generic Question"}
                                 ],
                                 "model":"generic-model",

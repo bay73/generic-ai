@@ -34,8 +34,7 @@ class AnthropicClient internal constructor(
 
     suspend fun generateText(request: AnthropicGenerateTextRequest): Result<AnthropicGenerateTextResponse> {
         val historyMessages = request.chatHistory?.map { AnthropicHttpChatMessage(it.role, it.content) } ?: emptyList()
-        val newMessages = mutableListOf<AnthropicHttpChatMessage>()
-        newMessages.add(AnthropicHttpChatMessage(role = "user", request.prompt))
+        val newMessages = listOf(AnthropicHttpChatMessage(role = "user", request.prompt))
         val httpRequest =
             AnthropicHttpChatRequest(
                 model = request.model,

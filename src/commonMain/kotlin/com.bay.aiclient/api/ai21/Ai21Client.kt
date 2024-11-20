@@ -26,16 +26,18 @@ class Ai21Client internal constructor(
         generateText(request.toAi21Request())
 
     suspend fun generateText(request: Ai21GenerateTextRequest): Result<Ai21GenerateTextResponse> {
+        val systemMessages =
+            if (request.systemInstructions?.isNotBlank() == true) {
+                listOf(Ai21HttpChatMessage(role = "system", request.systemInstructions))
+            } else {
+                emptyList()
+            }
         val historyMessages = request.chatHistory?.map { Ai21HttpChatMessage(it.role, it.content) } ?: emptyList()
-        val newMessages = mutableListOf<Ai21HttpChatMessage>()
-        if (request.systemInstructions?.isNotBlank() == true) {
-            newMessages.add(Ai21HttpChatMessage(role = "system", request.systemInstructions))
-        }
-        newMessages.add(Ai21HttpChatMessage(role = "user", request.prompt))
+        val newMessages = listOf(Ai21HttpChatMessage(role = "user", request.prompt))
         val httpRequest =
             Ai21HttpChatRequest(
                 model = request.model,
-                messages = historyMessages + newMessages,
+                messages = systemMessages + historyMessages + newMessages,
                 response_format = Ai21HttpChatResponseFormat.from(request.responseFormat),
                 max_tokens = request.maxOutputTokens,
                 temperature = request.temperature,

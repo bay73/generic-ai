@@ -1,5 +1,10 @@
-## 0.5.2
+## 0.5.3
 > Published 19 Nov 2024
+- Fixes
+  - Use max_tokens instead of unsupported max_completion_tokens parameter for Azure OpenAi requests.
+  - Change order of messages to have system instructions always the first (some providers are sensitive about this)
+
+## 0.5.2
 - support Azure OpenAI service
 - fix minor errors
 
