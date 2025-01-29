@@ -1,3 +1,7 @@
+## 0.5.4
+- update to ktor 3.0.3
+- publish ios version
+
 ## 0.5.3
 > Published 20 Nov 2024
 - Fixes
