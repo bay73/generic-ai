@@ -12,3 +12,4 @@ kotlin-js-store/
 *.zip
 *.tar.gz
 *.rar
+/local.properties
