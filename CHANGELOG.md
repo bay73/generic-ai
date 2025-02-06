@@ -1,4 +1,8 @@
+## 0.6.0
+- support DeepSeek platform
+
 ## 0.5.4
+> Published 31 Jan 2025
 - update to ktor 3.0.3
 - publish ios version
 
