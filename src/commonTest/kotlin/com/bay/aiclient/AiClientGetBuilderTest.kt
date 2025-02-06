@@ -6,6 +6,7 @@ import com.bay.aiclient.api.azureopenai.AzureOpenAiClient
 import com.bay.aiclient.api.bedrock.BedrockClient
 import com.bay.aiclient.api.cerebras.CerebrasClient
 import com.bay.aiclient.api.cohere.CohereClient
+import com.bay.aiclient.api.deepseek.DeepSeekClient
 import com.bay.aiclient.api.google.GoogleClient
 import com.bay.aiclient.api.mistral.MistralClient
 import com.bay.aiclient.api.openai.OpenAiClient
@@ -48,6 +49,13 @@ class AiClientGetBuilderTest {
         val builder = AiClient.getBuilder(AiClient.Type.COHERE)
 
         assertIs<CohereClient.Builder>(builder)
+    }
+
+    @Test
+    fun getDeepSeek_createsRightBuilder() {
+        val builder = AiClient.getBuilder(AiClient.Type.DEEP_SEEK)
+
+        assertIs<DeepSeekClient.Builder>(builder)
     }
 
     @Test

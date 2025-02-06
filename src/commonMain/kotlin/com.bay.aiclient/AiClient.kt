@@ -6,6 +6,7 @@ import com.bay.aiclient.api.azureopenai.AzureOpenAiClient
 import com.bay.aiclient.api.bedrock.BedrockClient
 import com.bay.aiclient.api.cerebras.CerebrasClient
 import com.bay.aiclient.api.cohere.CohereClient
+import com.bay.aiclient.api.deepseek.DeepSeekClient
 import com.bay.aiclient.api.google.GoogleClient
 import com.bay.aiclient.api.mistral.MistralClient
 import com.bay.aiclient.api.openai.OpenAiClient
@@ -60,6 +61,7 @@ abstract class AiClient internal constructor(
                 BedrockClient::class -> BedrockClient.Builder() as Builder<T>
                 CerebrasClient::class -> CerebrasClient.Builder() as Builder<T>
                 CohereClient::class -> CohereClient.Builder() as Builder<T>
+                DeepSeekClient::class -> DeepSeekClient.Builder() as Builder<T>
                 GoogleClient::class -> GoogleClient.Builder() as Builder<T>
                 MistralClient::class -> MistralClient.Builder() as Builder<T>
                 OpenAiClient::class -> OpenAiClient.Builder() as Builder<T>
@@ -89,6 +91,7 @@ abstract class AiClient internal constructor(
         BEDROCK(BedrockClient::class),
         CEREBRAS(CerebrasClient::class),
         COHERE(CohereClient::class),
+        DEEP_SEEK(DeepSeekClient::class),
         GOOGLE(GoogleClient::class),
         MISTRAL(MistralClient::class),
         OPEN_AI(OpenAiClient::class),

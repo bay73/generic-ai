@@ -1,4 +1,4 @@
-package com.bay.aiclient.api.openai
+package com.bay.aiclient.api.deepseek
 
 import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.domain.ResponseFormat
@@ -10,43 +10,38 @@ import com.bay.aiclient.utils.RequestMatcher.Companion.jsonBody
 import com.bay.aiclient.utils.RequestMatcher.Companion.postRequestTo
 import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class OpenAiClientTest {
+class DeepSeekClientTest {
     @Test
     fun listModels_parsesResponse() =
         runTest {
             val mockEngine =
                 MockHttpEngine()
-                    .expect(getRequestTo("https://api.openai.com/v1/models"))
+                    .expect(getRequestTo("https://api.deepseek.com/models"))
                     .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
                     .andRespondOk(
                         """{
                             "object": "list",
                             "data": [
                                 {
-                                    "id": "o1-preview",
+                                    "id": "deepseek-chat",
                                     "object": "model",
-                                    "created": 1725648897,
                                     "owned_by": "system"
                                 },
                                 {
-                                    "id": "gpt-4",
+                                    "id": "deepseek-reasoner",
                                     "object": "model",
-                                    "created": 1687882411,
-                                    "owned_by": "openai"
+                                    "owned_by": "deepseek"
                                 }
                             ]
                         }""",
                     )
 
             val client =
-                OpenAiClient
+                DeepSeekClient
                     .Builder()
                     .apply {
                         apiKey = "fake_key"
@@ -56,8 +51,8 @@ class OpenAiClientTest {
 
             val expectedModels =
                 listOf(
-                    OpenAiModel("o1-preview", "o1-preview", 1725648897),
-                    OpenAiModel("gpt-4", "gpt-4", 1687882411),
+                    DeepSeekModel("deepseek-chat", "deepseek-chat"),
+                    DeepSeekModel("deepseek-reasoner", "deepseek-reasoner"),
                 )
 
             val result = client.models()
@@ -72,7 +67,7 @@ class OpenAiClientTest {
         runTest {
             val mockEngine =
                 MockHttpEngine()
-                    .expect(postRequestTo("https://api.openai.com/v1/chat/completions"))
+                    .expect(postRequestTo("https://api.deepseek.com/chat/completions"))
                     .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
                     .expect(
                         jsonBody(
@@ -121,7 +116,7 @@ class OpenAiClientTest {
                     )
 
             val client =
-                OpenAiClient
+                DeepSeekClient
                     .Builder()
                     .apply {
                         apiKey = "fake_key"
@@ -145,7 +140,7 @@ class OpenAiClientTest {
         runTest {
             val mockEngine =
                 MockHttpEngine()
-                    .expect(postRequestTo("https://api.openai.com/v1/chat/completions"))
+                    .expect(postRequestTo("https://api.deepseek.com/chat/completions"))
                     .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
                     .expect(
                         jsonBody(
@@ -158,10 +153,9 @@ class OpenAiClientTest {
                                 ],
                                 "model":"test-model",
                                 "frequency_penalty":0.67,
-                                "max_completion_tokens":1000,
+                                "max_tokens":1000,
                                 "presence_penalty":0.12,
                                 "response_format":{"type":"json_object"},
-                                "seed": 10,
                                 "stop":["bad word","stop word"],
                                 "temperature":0.33,
                                 "top_p":0.55
@@ -170,7 +164,7 @@ class OpenAiClientTest {
                     ).andRespondOk("{ }")
 
             val client =
-                OpenAiClient
+                DeepSeekClient
                     .Builder()
                     .apply {
                         apiKey = "fake_key"
@@ -179,7 +173,7 @@ class OpenAiClientTest {
 
             val result =
                 client.generateText(
-                    OpenAiGenerateTextRequest
+                    DeepSeekGenerateTextRequest
                         .builder()
                         .apply {
                             model = "test-model"
@@ -188,7 +182,6 @@ class OpenAiClientTest {
                             responseFormat = ResponseFormat.JSON_OBJECT
                             chatHistory = listOf(TextMessage("user", "first question"), TextMessage("assistant", "first answer"))
                             maxOutputTokens = 1000
-                            seed = 10
                             stopSequences = listOf("bad word", "stop word")
                             temperature = 0.33
                             topP = 0.55
@@ -205,7 +198,7 @@ class OpenAiClientTest {
         runTest {
             val mockEngine =
                 MockHttpEngine()
-                    .expect(postRequestTo("https://api.openai.com/v1/chat/completions"))
+                    .expect(postRequestTo("https://api.deepseek.com/chat/completions"))
                     .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
                     .expect(
                         jsonBody(
@@ -217,7 +210,7 @@ class OpenAiClientTest {
                                     {"role":"user","content":"Generic Question"}
                                 ],
                                 "model":"generic-model",
-                                "max_completion_tokens":2000,
+                                "max_tokens":2000,
                                 "response_format":{"type":"text"},
                                 "stop":["bad","stop"],
                                 "temperature":0.66,
@@ -227,7 +220,7 @@ class OpenAiClientTest {
                     ).andRespondOk("{ }")
 
             val client =
-                OpenAiClient
+                DeepSeekClient
                     .Builder()
                     .apply {
                         apiKey = "fake_key"
@@ -260,7 +253,7 @@ class OpenAiClientTest {
         runTest {
             val mockEngine =
                 MockHttpEngine()
-                    .expect(postRequestTo("https://api.openai.com/v1/chat/completions"))
+                    .expect(postRequestTo("https://api.deepseek.com/chat/completions"))
                     .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
                     .expect(
                         jsonBody(
@@ -275,7 +268,7 @@ class OpenAiClientTest {
                     ).andRespondOk("{}")
 
             val client =
-                OpenAiClient
+                DeepSeekClient
                     .Builder()
                     .apply {
                         apiKey = "fake_key"
@@ -288,120 +281,6 @@ class OpenAiClientTest {
                 client.generateText {
                     prompt = "Question"
                 }
-
-            assertTrue(result.isSuccess)
-        }
-
-    @Test
-    fun responseSchema_passedToRequest() =
-        runTest {
-            val schema =
-                JsonObject(
-                    mapOf(
-                        "type" to JsonPrimitive("object"),
-                        "properties" to
-                            JsonObject(
-                                mapOf(
-                                    "answers" to
-                                        JsonObject(
-                                            mapOf(
-                                                "type" to JsonPrimitive("array"),
-                                                "items" to
-                                                    JsonObject(
-                                                        mapOf(
-                                                            "type" to JsonPrimitive("object"),
-                                                            "properties" to
-                                                                JsonObject(
-                                                                    mapOf(
-                                                                        "text" to
-                                                                            JsonObject(
-                                                                                mapOf(
-                                                                                    "type" to JsonPrimitive("string"),
-                                                                                ),
-                                                                            ),
-                                                                        "source" to
-                                                                            JsonObject(
-                                                                                mapOf(
-                                                                                    "type" to JsonPrimitive("string"),
-                                                                                ),
-                                                                            ),
-                                                                    ),
-                                                                ),
-                                                            "required" to
-                                                                JsonArray(
-                                                                    listOf(JsonPrimitive("text")),
-                                                                ),
-                                                        ),
-                                                    ),
-                                            ),
-                                        ),
-                                ),
-                            ),
-                        "required" to
-                            JsonArray(
-                                listOf(JsonPrimitive("answers")),
-                            ),
-                    ),
-                )
-            val mockEngine =
-                MockHttpEngine()
-                    .expect(postRequestTo("https://api.openai.com/v1/chat/completions"))
-                    .expect(header(HttpHeaders.Authorization, "Bearer fake_key"))
-                    .expect(
-                        jsonBody(
-                            """{
-                                "messages":[
-                                    {"role":"user","content":"Generic Question"}
-                                ],
-                                "model":"generic-model",
-                                "response_format":{
-                                    "type":"json_schema",
-                                    "json_schema":{
-                                        "name":"response_format",
-                                        "description":null,
-                                        "strict":false,
-                                        "schema":{
-                                            "type":"object",
-                                            "properties":{
-                                                "answers":{
-                                                    "type":"array",
-                                                    "items":{
-                                                        "type":"object",
-                                                        "properties":{
-                                                            "text":{"type":"string"},
-                                                            "source":{"type":"string"}
-                                                        },
-                                                        "required":["text"]
-                                                    }
-                                                }
-                                            },
-                                            "required":["answers"]
-                                        }
-                                    }
-                                }
-                            }""",
-                        ),
-                    ).andRespondOk("{ }")
-
-            val client =
-                OpenAiClient
-                    .Builder()
-                    .apply {
-                        apiKey = "fake_key"
-                        defaultModel = "default_model"
-                        httpEngine = mockEngine
-                    }.build()
-
-            val result =
-                client.generateText(
-                    GenerateTextRequest
-                        .Builder()
-                        .apply {
-                            model = "generic-model"
-                            prompt = "Generic Question"
-                            responseFormat = ResponseFormat.jsonSchema(schema)
-                        }.build(),
-                )
 
             assertTrue(result.isSuccess)
         }

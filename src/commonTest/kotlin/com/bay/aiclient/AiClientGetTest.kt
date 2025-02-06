@@ -6,6 +6,7 @@ import com.bay.aiclient.api.azureopenai.AzureOpenAiClient
 import com.bay.aiclient.api.bedrock.BedrockClient
 import com.bay.aiclient.api.cerebras.CerebrasClient
 import com.bay.aiclient.api.cohere.CohereClient
+import com.bay.aiclient.api.deepseek.DeepSeekClient
 import com.bay.aiclient.api.google.GoogleClient
 import com.bay.aiclient.api.mistral.MistralClient
 import com.bay.aiclient.api.openai.OpenAiClient
@@ -94,6 +95,21 @@ class AiClientGetTest {
         assertEquals("test-cohere-model", client.defaultModel)
         assertEquals(0.4, client.defaultTemperature)
         assertEquals(40.seconds, client.timeout)
+    }
+
+    @Test
+    fun getDeepSeek_createsRightClient() {
+        val client =
+            AiClient.get(AiClient.Type.DEEP_SEEK) {
+                this.defaultModel = "test-deepseek-model"
+                this.defaultTemperature = 0.45
+                this.timeout = 45.seconds
+            }
+
+        assertIs<DeepSeekClient>(client)
+        assertEquals("test-deepseek-model", client.defaultModel)
+        assertEquals(0.45, client.defaultTemperature)
+        assertEquals(45.seconds, client.timeout)
     }
 
     @Test
