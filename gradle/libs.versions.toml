@@ -1,7 +1,7 @@
 [versions]
 kotlin = "2.1.10"
 kotlinx-coroutines = "1.10.1"
-ktor = "3.0.3"
+ktor = "3.1.0"
 ktor-wasm = "3.2.0"
 slf4j = "2.0.16"
 aws = "2.30.11"
