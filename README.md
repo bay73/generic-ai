@@ -9,6 +9,7 @@ Easy-to-use generic Kotlin API client for connecting to various AI providers wit
 - [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/)
 - [Cerebras](https://inference-docs.cerebras.ai/introduction)
 - [Cohere](https://docs.cohere.com/)
+- [DeepSeek](https://platform.deepseek.com/)
 - [Google Gemini](https://ai.google.dev/gemini-api/docs)
 - [Mistral](https://docs.mistral.ai/)
 - [OpenAI](https://platform.openai.com/docs/overview)
@@ -110,14 +111,15 @@ fun customizeRequest() {
 
 `responseFormat` allows to specify returning text, generic JSON or validated JSON schema. The parameter has limited support by different providers:  
 
-| Provider      | Text | Generic JSON | JSON schema          |
-|---------------|------|--------------|----------------------|
-| AI21 Lab      | ✅    | ✅            |                      |
-| Anthropic     | ✅    |              |                      |
-| AWS Bedrock   | ✅    |              |                      |
-| Azure OpenAI  | ✅    | ✅            | ✅                    |
-| Cerebras      | ✅    | ✅            |                      |
-| Cohere        | ✅    | ✅            | ✅                    |
+| Provider     | Text | Generic JSON | JSON schema          |
+|--------------|------|--------------|----------------------|
+| AI21 Lab     | ✅    | ✅            |                      |
+| Anthropic    | ✅    |              |                      |
+| AWS Bedrock  | ✅    |              |                      |
+| Azure OpenAI | ✅    | ✅            | ✅                    |
+| Cerebras     | ✅    | ✅            |                      |
+| Cohere       | ✅    | ✅            | ✅                    |
+| DeepSeek     | ✅    | ✅            |                     |
 | Google Gemini | ✅    | ✅            | ✅                    |
 | Mistral       | ✅    | ✅            |                      |
 | OpenAI        | ✅    | ✅            | ✅ depending on model |
@@ -130,7 +132,7 @@ fun customizeRequest() {
 
 ### Additional generation parameters
 
-Some AI providers have additional settings which can be adjusted. To use this you need to request client of specific class: 
+Some AI providers have additional settings which can be adjusted. To use this you need to request client of a specific class: 
 ```kotlin
 fun getResponseWithSpecificParameters() {
     // Create a client for specified AI provider.
@@ -153,7 +155,7 @@ fun getResponseWithSpecificParameters() {
 AWS bedrock doesn't support token based authentication. To use it you need to provide special credentials object to the client constructor:
 ```kotlin
 fun getBedrockClient() {
-    // You can use either [DefaultCredentialsProvider](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-chain.html) or specify accesskey and token directly.
+    // You can use either [DefaultCredentialsProvider](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-chain.html) or specify access key and token directly.
     val credentials = BedrockClient.Credentials("region", true)
     // or 
     val credentials = BedrockClient.Credentials("region", false, "accessKeyId", "secretAccessKey", "sessionToken ")
