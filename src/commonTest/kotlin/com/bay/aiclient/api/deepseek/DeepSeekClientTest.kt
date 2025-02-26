@@ -83,7 +83,7 @@ class DeepSeekClientTest {
                             "id": "chatcmpl-ATBu0ntPVD82UilqNZlgZTTfhJ0eu",
                             "object": "chat.completion",
                             "created": 1731520628,
-                            "model": "gpt-4o-2024-08-06",
+                            "model": "deepseek-chat",
                             "choices": [
                                 {
                                     "index": 0,
@@ -101,15 +101,10 @@ class DeepSeekClientTest {
                                 "completion_tokens": 59,
                                 "total_tokens": 124,
                                 "prompt_tokens_details": {
-                                    "cached_tokens": 0,
-                                    "audio_tokens": 0
+                                    "cached_tokens": 0
                                 },
-                                "completion_tokens_details": {
-                                    "reasoning_tokens": 0,
-                                    "audio_tokens": 0,
-                                    "accepted_prediction_tokens": 0,
-                                    "rejected_prediction_tokens": 0
-                                }
+                                "prompt_cache_hit_tokens": 0,
+                                "prompt_cache_miss_tokens": 7
                             },
                             "system_fingerprint": "fp_159d8341cc"
                         }""",
