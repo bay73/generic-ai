@@ -1,4 +1,5 @@
 ## 0.6.0
+> Published 26 Feb 2025
 - support DeepSeek platform
 
 ## 0.5.4
