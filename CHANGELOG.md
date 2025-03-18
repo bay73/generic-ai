@@ -1,4 +1,5 @@
 ## 0.6.1
+> Published 18 Mar 2025
 - actualized list of supported models
 
 ## 0.6.0
