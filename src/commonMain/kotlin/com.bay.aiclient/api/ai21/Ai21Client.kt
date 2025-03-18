@@ -19,7 +19,7 @@ class Ai21Client internal constructor(
 ) : AiClient() {
     override suspend fun models(): Result<Ai21ModelsResponse> =
         Result.success(
-            Ai21ModelsResponse(listOf(Ai21Model("jamba-1.5-large", "jamba-1.5-large"), Ai21Model("jamba-1.5-mini", "jamba-1.5-mini"))),
+            Ai21ModelsResponse(listOf(Ai21Model("jamba-large", "jamba-large"), Ai21Model("jamba-mini", "jamba-mini"))),
         )
 
     override suspend fun generateText(request: GenerateTextRequest): Result<Ai21GenerateTextResponse> =

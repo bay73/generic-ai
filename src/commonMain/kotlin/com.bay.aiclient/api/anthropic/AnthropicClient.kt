@@ -17,17 +17,12 @@ class AnthropicClient internal constructor(
     httpEngine: HttpClientEngine? = null,
 ) : AiClient() {
     override suspend fun models(): Result<AnthropicModelsResponse> =
-        Result.success(
+        client.runGet("/v1/models") { result: AnthropicHttpModelsResponse ->
             AnthropicModelsResponse(
-                listOf(
-                    AnthropicModel("claude-3-5-sonnet-20241022", "Claude 3.5 Sonnet"),
-                    AnthropicModel("claude-3-5-haiku-20241022", "Claude 3.5 Haiku"),
-                    AnthropicModel("claude-3-opus-20240229", "Claude 3 Opus"),
-                    AnthropicModel("claude-3-sonnet-20240229", "Claude 3 Sonnet"),
-                    AnthropicModel("claude-3-haiku-20240307", "Claude 3 Haiku"),
-                ),
-            ),
-        )
+                result.data?.map { model -> AnthropicModel(id = model.id ?: "", name = model.display_name ?: "") }
+                    ?: emptyList(),
+            )
+        }
 
     override suspend fun generateText(request: GenerateTextRequest): Result<AnthropicGenerateTextResponse> =
         generateText(request.toAnthropicRequest())

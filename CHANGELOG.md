@@ -1,3 +1,6 @@
+## 0.6.1
+- actualized list of supported models
+
 ## 0.6.0
 > Published 26 Feb 2025
 - support DeepSeek platform

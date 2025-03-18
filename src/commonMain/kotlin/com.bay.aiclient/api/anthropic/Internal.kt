@@ -45,3 +45,15 @@ data class AnthropicHttpUsage(
     val cache_read_input_tokens: Int? = null,
     val output_tokens: Int? = null,
 )
+
+@Serializable
+data class AnthropicHttpModelsResponse(
+    val data: List<AnthropicHttpModel>? = null,
+)
+
+@Serializable
+data class AnthropicHttpModel(
+    val id: String? = null,
+    val display_name: String? = null,
+    val created_at: String? = null,
+)
