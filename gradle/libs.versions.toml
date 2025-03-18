@@ -7,7 +7,7 @@ slf4j = "2.0.17"
 aws = "2.31.1"
 agp = "8.7.1"
 spotless = "7.0.0.BETA3"
-vanniktech-maven-publish = "0.30.0"
+vanniktech-maven-publish = "0.31.0"
 android-compileSdk = "34"
 android-minSdk = "24"
 
