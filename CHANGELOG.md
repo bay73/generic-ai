@@ -1,4 +1,5 @@
 ## 0.6.2
+> Published 21 Mar 2025
 - support Grok (https://x.ai) API
 
 ## 0.6.1
