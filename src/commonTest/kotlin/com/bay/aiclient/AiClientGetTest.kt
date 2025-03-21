@@ -8,6 +8,7 @@ import com.bay.aiclient.api.cerebras.CerebrasClient
 import com.bay.aiclient.api.cohere.CohereClient
 import com.bay.aiclient.api.deepseek.DeepSeekClient
 import com.bay.aiclient.api.google.GoogleClient
+import com.bay.aiclient.api.grok.GrokClient
 import com.bay.aiclient.api.mistral.MistralClient
 import com.bay.aiclient.api.openai.OpenAiClient
 import com.bay.aiclient.api.sambanova.SambaNovaClient
@@ -125,6 +126,21 @@ class AiClientGetTest {
         assertEquals("test-google-model", client.defaultModel)
         assertEquals(0.5, client.defaultTemperature)
         assertEquals(50.seconds, client.timeout)
+    }
+
+    @Test
+    fun getGrok_createsRightClient() {
+        val client =
+            AiClient.get(AiClient.Type.GROK) {
+                this.defaultModel = "test-grok-model"
+                this.defaultTemperature = 0.55
+                this.timeout = 55.seconds
+            }
+
+        assertIs<GrokClient>(client)
+        assertEquals("test-grok-model", client.defaultModel)
+        assertEquals(0.55, client.defaultTemperature)
+        assertEquals(55.seconds, client.timeout)
     }
 
     @Test

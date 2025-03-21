@@ -1,3 +1,6 @@
+## 0.6.2
+- support Grok (https://x.ai) API
+
 ## 0.6.1
 > Published 18 Mar 2025
 - actualized list of supported models

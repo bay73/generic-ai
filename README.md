@@ -11,6 +11,7 @@ Easy-to-use generic Kotlin API client for connecting to various AI providers wit
 - [Cohere](https://docs.cohere.com/)
 - [DeepSeek](https://platform.deepseek.com/)
 - [Google Gemini](https://ai.google.dev/gemini-api/docs)
+- [Grok](https://docs.x.ai/docs/api-reference)
 - [Mistral](https://docs.mistral.ai/)
 - [OpenAI](https://platform.openai.com/docs/overview)
 - [SambaNova](https://community.sambanova.ai/docs)
@@ -111,20 +112,21 @@ fun customizeRequest() {
 
 `responseFormat` allows to specify returning text, generic JSON or validated JSON schema. The parameter has limited support by different providers:  
 
-| Provider     | Text | Generic JSON | JSON schema          |
-|--------------|------|--------------|----------------------|
-| AI21 Lab     | ✅    | ✅            |                      |
-| Anthropic    | ✅    |              |                      |
-| AWS Bedrock  | ✅    |              |                      |
-| Azure OpenAI | ✅    | ✅            | ✅                    |
-| Cerebras     | ✅    | ✅            |                      |
-| Cohere       | ✅    | ✅            | ✅                    |
-| DeepSeek     | ✅    | ✅            |                     |
-| Google Gemini | ✅    | ✅            | ✅                    |
-| Mistral       | ✅    | ✅            |                      |
-| OpenAI        | ✅    | ✅            | ✅ depending on model |
-| SambaNova     | ✅    |              |                      |
-| Together AI   | ✅    | ✅            | ✅ depending on model |
+| Provider      | Text | Generic JSON  | JSON schema          |
+|---------------|------|---------------|----------------------|
+| AI21 Lab      | ✅    | ✅             |                      |
+| Anthropic     | ✅    |               |                      |
+| AWS Bedrock   | ✅    |               |                      |
+| Azure OpenAI  | ✅    | ✅             | ✅                    |
+| Cerebras      | ✅    | ✅             |                      |
+| Cohere        | ✅    | ✅             | ✅                    |
+| DeepSeek      | ✅    | ✅             |                      |
+| Google Gemini | ✅    | ✅             | ✅                    |
+| Grok          | ✅    | ✅             | ✅                    |
+| Mistral       | ✅    | ✅             |                      |
+| OpenAI        | ✅    | ✅             | ✅ depending on model |
+| SambaNova     | ✅    |               |                      |
+| Together AI   | ✅    | ✅             | ✅ depending on model |
    
 
 

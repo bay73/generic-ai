@@ -8,6 +8,7 @@ import com.bay.aiclient.api.cerebras.CerebrasClient
 import com.bay.aiclient.api.cohere.CohereClient
 import com.bay.aiclient.api.deepseek.DeepSeekClient
 import com.bay.aiclient.api.google.GoogleClient
+import com.bay.aiclient.api.grok.GrokClient
 import com.bay.aiclient.api.mistral.MistralClient
 import com.bay.aiclient.api.openai.OpenAiClient
 import com.bay.aiclient.api.sambanova.SambaNovaClient
@@ -63,6 +64,13 @@ class AiClientGetBuilderTest {
         val builder = AiClient.getBuilder(AiClient.Type.GOOGLE)
 
         assertIs<GoogleClient.Builder>(builder)
+    }
+
+    @Test
+    fun getGrok_createsRightBuilder() {
+        val builder = AiClient.getBuilder(AiClient.Type.GROK)
+
+        assertIs<GrokClient.Builder>(builder)
     }
 
     @Test
