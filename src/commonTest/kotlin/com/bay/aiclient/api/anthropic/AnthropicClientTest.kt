@@ -4,6 +4,7 @@ import com.bay.aiclient.domain.GenerateTextRequest
 import com.bay.aiclient.domain.ResponseFormat
 import com.bay.aiclient.domain.TextMessage
 import com.bay.aiclient.utils.MockHttpEngine
+import com.bay.aiclient.utils.RequestMatcher.Companion.getRequestTo
 import com.bay.aiclient.utils.RequestMatcher.Companion.header
 import com.bay.aiclient.utils.RequestMatcher.Companion.jsonBody
 import com.bay.aiclient.utils.RequestMatcher.Companion.postRequestTo
@@ -16,16 +17,97 @@ class AnthropicClientTest {
     @Test
     fun listModels_returnsStaticList() =
         runTest {
+            val mockEngine =
+                MockHttpEngine()
+                    .expect(getRequestTo("https://api.anthropic.com/v1/models"))
+                    .expect(header("x-api-key", "fake_key"))
+                    .expect(header("anthropic-version", "2023-06-01"))
+                    .andRespondOk(
+                        """
+                        {
+                          "data": [
+                            {
+                              "type": "model",
+                              "id": "claude-3-7-sonnet-20250219",
+                              "display_name": "Claude 3.7 Sonnet",
+                              "created_at": "2025-02-24T00:00:00Z"
+                            },
+                            {
+                              "type": "model",
+                              "id": "claude-3-5-sonnet-20241022",
+                              "display_name": "Claude 3.5 Sonnet (New)",
+                              "created_at": "2024-10-22T00:00:00Z"
+                            },
+                            {
+                              "type": "model",
+                              "id": "claude-3-5-haiku-20241022",
+                              "display_name": "Claude 3.5 Haiku",
+                              "created_at": "2024-10-22T00:00:00Z"
+                            },
+                            {
+                              "type": "model",
+                              "id": "claude-3-5-sonnet-20240620",
+                              "display_name": "Claude 3.5 Sonnet (Old)",
+                              "created_at": "2024-06-20T00:00:00Z"
+                            },
+                            {
+                              "type": "model",
+                              "id": "claude-3-haiku-20240307",
+                              "display_name": "Claude 3 Haiku",
+                              "created_at": "2024-03-07T00:00:00Z"
+                            },
+                            {
+                              "type": "model",
+                              "id": "claude-3-opus-20240229",
+                              "display_name": "Claude 3 Opus",
+                              "created_at": "2024-02-29T00:00:00Z"
+                            },
+                            {
+                              "type": "model",
+                              "id": "claude-3-sonnet-20240229",
+                              "display_name": "Claude 3 Sonnet",
+                              "created_at": "2024-02-29T00:00:00Z"
+                            },{
+                              "type": "model",
+                              "id": "claude-2.1",
+                              "display_name": "Claude 2.1",
+                              "created_at": "2023-11-21T00:00:00Z"
+                            },
+                            {
+                              "type": "model",
+                              "id": "claude-2.0",
+                              "display_name": "Claude 2.0",
+                              "created_at": "2023-07-11T00:00:00Z"
+                            }
+                          ],
+                          "has_more": false,
+                          "first_id": "claude-3-7-sonnet-20250219",
+                          "last_id": "claude-2.0"
+                        }
+                        """.trimMargin(),
+                    )
+
+            val client =
+                AnthropicClient
+                    .Builder()
+                    .apply {
+                        apiKey = "fake_key"
+                        defaultModel = "test-model"
+                        httpEngine = mockEngine
+                    }.build()
+
             val expectedModels =
                 listOf(
-                    AnthropicModel("claude-3-5-sonnet-20241022", "Claude 3.5 Sonnet"),
+                    AnthropicModel("claude-3-7-sonnet-20250219", "Claude 3.7 Sonnet"),
+                    AnthropicModel("claude-3-5-sonnet-20241022", "Claude 3.5 Sonnet (New)"),
                     AnthropicModel("claude-3-5-haiku-20241022", "Claude 3.5 Haiku"),
+                    AnthropicModel("claude-3-5-sonnet-20240620", "Claude 3.5 Sonnet (Old)"),
+                    AnthropicModel("claude-3-haiku-20240307", "Claude 3 Haiku"),
                     AnthropicModel("claude-3-opus-20240229", "Claude 3 Opus"),
                     AnthropicModel("claude-3-sonnet-20240229", "Claude 3 Sonnet"),
-                    AnthropicModel("claude-3-haiku-20240307", "Claude 3 Haiku"),
+                    AnthropicModel("claude-2.1", "Claude 2.1"),
+                    AnthropicModel("claude-2.0", "Claude 2.0"),
                 )
-
-            val client = AnthropicClient.Builder().build()
 
             val result = client.models()
 

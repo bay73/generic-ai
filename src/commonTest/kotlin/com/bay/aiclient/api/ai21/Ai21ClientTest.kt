@@ -17,7 +17,7 @@ class Ai21ClientTest {
     @Test
     fun listModels_returnsStaticList() =
         runTest {
-            val expectedModels = listOf(Ai21Model("jamba-1.5-large", "jamba-1.5-large"), Ai21Model("jamba-1.5-mini", "jamba-1.5-mini"))
+            val expectedModels = listOf(Ai21Model("jamba-large", "jamba-large"), Ai21Model("jamba-mini", "jamba-mini"))
             val client = Ai21Client.Builder().build()
 
             val result = client.models()
