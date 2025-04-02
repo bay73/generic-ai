@@ -13,6 +13,7 @@ import com.bay.aiclient.api.mistral.MistralClient
 import com.bay.aiclient.api.openai.OpenAiClient
 import com.bay.aiclient.api.sambanova.SambaNovaClient
 import com.bay.aiclient.api.togetherai.TogetherAiClient
+import com.bay.aiclient.api.yandex.YandexClient
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -231,5 +232,20 @@ class AiClientGetTest {
         assertEquals("test-model", client.defaultModel)
         assertEquals(0.33, client.defaultTemperature)
         assertEquals(33.seconds, client.timeout)
+    }
+
+    @Test
+    fun getYandex_createsRightClient() {
+        val client =
+            AiClient.get(AiClient.Type.YANDEX) {
+                this.defaultModel = "test-yandex-model"
+                this.defaultTemperature = 0.95
+                this.timeout = 95.seconds
+            }
+
+        assertIs<YandexClient>(client)
+        assertEquals("test-yandex-model", client.defaultModel)
+        assertEquals(0.95, client.defaultTemperature)
+        assertEquals(95.seconds, client.timeout)
     }
 }
