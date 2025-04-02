@@ -16,6 +16,7 @@ Easy-to-use generic Kotlin API client for connecting to various AI providers wit
 - [OpenAI](https://platform.openai.com/docs/overview)
 - [SambaNova](https://community.sambanova.ai/docs)
 - [Together AI](https://docs.together.ai/docs)
+- [Yandex AI Studio](https://yandex.cloud/en/docs/foundation-models/text-generation/api-ref/TextGeneration/completion)
 
 ## 🛠️ Setup
 
@@ -127,6 +128,8 @@ fun customizeRequest() {
 | OpenAI        | ✅    | ✅             | ✅ depending on model |
 | SambaNova     | ✅    |               |                      |
 | Together AI   | ✅    | ✅             | ✅ depending on model |
+| Yandex AI     | ✅    | ✅             | ✅                    |
+
    
 
 
@@ -176,6 +179,20 @@ fun getAzureOpenAiClient() {
     // Create a client using specific builder
     val client = AzureOpenAiClient.Builder().apply {
         resourceName = "your-resource-name"
+        apiKey = "your-api-key"
+    }.build()
+}
+```
+Further usage of this client is the same as for all other AI clients.
+
+### Yandex AI Studio connection
+
+Yandex requires to specify a folder - a space where Yandex Cloud resources are created and grouped. It is used as a part of foundation model URI. To specify the folder use dedicated client builder which allow to set the resource folder as a string:
+```kotlin
+fun getYandexOpenAiClient() {
+    // Create a client using specific builder
+    val client = YandexOpenAiClient.Builder().apply {
+        resourceFolder = "your-resource-name"
         apiKey = "your-api-key"
     }.build()
 }
