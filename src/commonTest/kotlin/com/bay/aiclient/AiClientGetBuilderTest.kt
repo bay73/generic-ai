@@ -9,6 +9,7 @@ import com.bay.aiclient.api.cohere.CohereClient
 import com.bay.aiclient.api.deepseek.DeepSeekClient
 import com.bay.aiclient.api.google.GoogleClient
 import com.bay.aiclient.api.grok.GrokClient
+import com.bay.aiclient.api.inceptionlabs.InceptionLabsClient
 import com.bay.aiclient.api.mistral.MistralClient
 import com.bay.aiclient.api.openai.OpenAiClient
 import com.bay.aiclient.api.sambanova.SambaNovaClient
@@ -72,6 +73,13 @@ class AiClientGetBuilderTest {
         val builder = AiClient.getBuilder(AiClient.Type.GROK)
 
         assertIs<GrokClient.Builder>(builder)
+    }
+
+    @Test
+    fun getInceptionLabs_createsRightBuilder() {
+        val builder = AiClient.getBuilder(AiClient.Type.INCEPTION_LABS)
+
+        assertIs<InceptionLabsClient.Builder>(builder)
     }
 
     @Test

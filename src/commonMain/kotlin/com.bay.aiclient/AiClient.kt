@@ -9,6 +9,7 @@ import com.bay.aiclient.api.cohere.CohereClient
 import com.bay.aiclient.api.deepseek.DeepSeekClient
 import com.bay.aiclient.api.google.GoogleClient
 import com.bay.aiclient.api.grok.GrokClient
+import com.bay.aiclient.api.inceptionlabs.InceptionLabsClient
 import com.bay.aiclient.api.mistral.MistralClient
 import com.bay.aiclient.api.openai.OpenAiClient
 import com.bay.aiclient.api.sambanova.SambaNovaClient
@@ -66,6 +67,7 @@ abstract class AiClient internal constructor(
                 DeepSeekClient::class -> DeepSeekClient.Builder() as Builder<T>
                 GoogleClient::class -> GoogleClient.Builder() as Builder<T>
                 GrokClient::class -> GrokClient.Builder() as Builder<T>
+                InceptionLabsClient::class -> InceptionLabsClient.Builder() as Builder<T>
                 MistralClient::class -> MistralClient.Builder() as Builder<T>
                 OpenAiClient::class -> OpenAiClient.Builder() as Builder<T>
                 SambaNovaClient::class -> SambaNovaClient.Builder() as Builder<T>
@@ -98,6 +100,7 @@ abstract class AiClient internal constructor(
         DEEP_SEEK(DeepSeekClient::class),
         GOOGLE(GoogleClient::class),
         GROK(GrokClient::class),
+        INCEPTION_LABS(InceptionLabsClient::class),
         MISTRAL(MistralClient::class),
         OPEN_AI(OpenAiClient::class),
         SAMBA_NOVA(SambaNovaClient::class),

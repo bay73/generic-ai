@@ -9,6 +9,7 @@ import com.bay.aiclient.api.cohere.CohereClient
 import com.bay.aiclient.api.deepseek.DeepSeekClient
 import com.bay.aiclient.api.google.GoogleClient
 import com.bay.aiclient.api.grok.GrokClient
+import com.bay.aiclient.api.inceptionlabs.InceptionLabsClient
 import com.bay.aiclient.api.mistral.MistralClient
 import com.bay.aiclient.api.openai.OpenAiClient
 import com.bay.aiclient.api.sambanova.SambaNovaClient
@@ -67,6 +68,21 @@ class AiClientGetTest {
         assertEquals("test-azure-openai-model", client.defaultModel)
         assertEquals(0.25, client.defaultTemperature)
         assertEquals(25.seconds, client.timeout)
+    }
+
+    @Test
+    fun getBedrock_createsRightClient() {
+        val client =
+            AiClient.get(AiClient.Type.BEDROCK) {
+                this.defaultModel = "test-bedrock-model"
+                this.defaultTemperature = 1.0
+                this.timeout = 100.seconds
+            }
+
+        assertIs<BedrockClient>(client)
+        assertEquals("test-bedrock-model", client.defaultModel)
+        assertEquals(1.0, client.defaultTemperature)
+        assertEquals(100.seconds, client.timeout)
     }
 
     @Test
@@ -145,6 +161,21 @@ class AiClientGetTest {
     }
 
     @Test
+    fun getInceptionLabs_createsRightClient() {
+        val client =
+            AiClient.get(AiClient.Type.INCEPTION_LABS) {
+                this.defaultModel = "test-inception-model"
+                this.defaultTemperature = 0.57
+                this.timeout = 57.seconds
+            }
+
+        assertIs<InceptionLabsClient>(client)
+        assertEquals("test-inception-model", client.defaultModel)
+        assertEquals(0.57, client.defaultTemperature)
+        assertEquals(57.seconds, client.timeout)
+    }
+
+    @Test
     fun getMistral_createsRightClient() {
         val client =
             AiClient.get(AiClient.Type.MISTRAL) {
@@ -205,18 +236,18 @@ class AiClientGetTest {
     }
 
     @Test
-    fun getBedrock_createsRightClient() {
+    fun getYandex_createsRightClient() {
         val client =
-            AiClient.get(AiClient.Type.BEDROCK) {
-                this.defaultModel = "test-bedrock-model"
-                this.defaultTemperature = 1.0
-                this.timeout = 100.seconds
+            AiClient.get(AiClient.Type.YANDEX) {
+                this.defaultModel = "test-yandex-model"
+                this.defaultTemperature = 0.95
+                this.timeout = 95.seconds
             }
 
-        assertIs<BedrockClient>(client)
-        assertEquals("test-bedrock-model", client.defaultModel)
-        assertEquals(1.0, client.defaultTemperature)
-        assertEquals(100.seconds, client.timeout)
+        assertIs<YandexClient>(client)
+        assertEquals("test-yandex-model", client.defaultModel)
+        assertEquals(0.95, client.defaultTemperature)
+        assertEquals(95.seconds, client.timeout)
     }
 
     @Test
@@ -232,20 +263,5 @@ class AiClientGetTest {
         assertEquals("test-model", client.defaultModel)
         assertEquals(0.33, client.defaultTemperature)
         assertEquals(33.seconds, client.timeout)
-    }
-
-    @Test
-    fun getYandex_createsRightClient() {
-        val client =
-            AiClient.get(AiClient.Type.YANDEX) {
-                this.defaultModel = "test-yandex-model"
-                this.defaultTemperature = 0.95
-                this.timeout = 95.seconds
-            }
-
-        assertIs<YandexClient>(client)
-        assertEquals("test-yandex-model", client.defaultModel)
-        assertEquals(0.95, client.defaultTemperature)
-        assertEquals(95.seconds, client.timeout)
     }
 }

@@ -1,3 +1,6 @@
+## 0.6.4
+- support Inception Labs (Mercury Platform) API
+
 ## 0.6.3
 > Published 2 Apr 2025
 - support Yandex API
