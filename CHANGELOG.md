@@ -1,4 +1,5 @@
 ## 0.6.3
+> Published 2 Apr 2025
 - support Yandex API
 
 ## 0.6.2
