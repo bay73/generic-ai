@@ -1,4 +1,5 @@
 ## 0.6.4
+> Published 14 Apr 2025
 - support Inception Labs (Mercury Platform) API
 
 ## 0.6.3
