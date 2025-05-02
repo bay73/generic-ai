@@ -1,3 +1,6 @@
+## 0.6.5
+- support Novita AI API
+
 ## 0.6.4
 > Published 14 Apr 2025
 - support Inception Labs (Mercury Platform) API

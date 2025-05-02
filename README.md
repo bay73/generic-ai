@@ -14,6 +14,7 @@ Easy-to-use generic Kotlin API client for connecting to various AI providers wit
 - [Grok](https://docs.x.ai/docs/api-reference)
 - [Inception Labs] (https://platform.inceptionlabs.ai/docs)
 - [Mistral](https://docs.mistral.ai/)
+- [Novita] (https://novita.ai/docs/api-reference/)
 - [OpenAI](https://platform.openai.com/docs/overview)
 - [SambaNova](https://community.sambanova.ai/docs)
 - [Together AI](https://docs.together.ai/docs)
@@ -29,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.bay73:generic-ai:0.6.3")
+    implementation("io.github.bay73:generic-ai:0.6.5")
 }
 ```
 
@@ -127,6 +128,7 @@ fun customizeRequest() {
 | Grok           | ✅    | ✅            | ✅                    |
 | Inception Labs | ✅    |              |                      |
 | Mistral        | ✅    | ✅            |                      |
+| Novita         | ✅    | ✅            | ✅                    |
 | OpenAI         | ✅    | ✅            | ✅ depending on model |
 | SambaNova      | ✅    |              |                      |
 | Together AI    | ✅    | ✅            | ✅ depending on model |

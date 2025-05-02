@@ -11,6 +11,7 @@ import com.bay.aiclient.api.google.GoogleClient
 import com.bay.aiclient.api.grok.GrokClient
 import com.bay.aiclient.api.inceptionlabs.InceptionLabsClient
 import com.bay.aiclient.api.mistral.MistralClient
+import com.bay.aiclient.api.novita.NovitaClient
 import com.bay.aiclient.api.openai.OpenAiClient
 import com.bay.aiclient.api.sambanova.SambaNovaClient
 import com.bay.aiclient.api.togetherai.TogetherAiClient
@@ -188,6 +189,21 @@ class AiClientGetTest {
         assertEquals("test-mistral-model", client.defaultModel)
         assertEquals(0.6, client.defaultTemperature)
         assertEquals(60.seconds, client.timeout)
+    }
+
+    @Test
+    fun getNovita_createsRightClient() {
+        val client =
+            AiClient.get(AiClient.Type.NOVITA) {
+                this.defaultModel = "test-novita-model"
+                this.defaultTemperature = 0.66
+                this.timeout = 66.seconds
+            }
+
+        assertIs<NovitaClient>(client)
+        assertEquals("test-novita-model", client.defaultModel)
+        assertEquals(0.66, client.defaultTemperature)
+        assertEquals(66.seconds, client.timeout)
     }
 
     @Test

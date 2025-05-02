@@ -11,6 +11,7 @@ import com.bay.aiclient.api.google.GoogleClient
 import com.bay.aiclient.api.grok.GrokClient
 import com.bay.aiclient.api.inceptionlabs.InceptionLabsClient
 import com.bay.aiclient.api.mistral.MistralClient
+import com.bay.aiclient.api.novita.NovitaClient
 import com.bay.aiclient.api.openai.OpenAiClient
 import com.bay.aiclient.api.sambanova.SambaNovaClient
 import com.bay.aiclient.api.togetherai.TogetherAiClient
@@ -87,6 +88,13 @@ class AiClientGetBuilderTest {
         val builder = AiClient.getBuilder(AiClient.Type.MISTRAL)
 
         assertIs<MistralClient.Builder>(builder)
+    }
+
+    @Test
+    fun getNovita_createsRightBuilder() {
+        val builder = AiClient.getBuilder(AiClient.Type.NOVITA)
+
+        assertIs<NovitaClient.Builder>(builder)
     }
 
     @Test
