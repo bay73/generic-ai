@@ -1,4 +1,5 @@
 ## 0.6.5
+> Published 02 May 2025
 - support Novita AI API
 
 ## 0.6.4
