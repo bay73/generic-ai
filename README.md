@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.bay73:generic-ai:0.6.5")
+    implementation("io.github.bay73:generic-ai:0.6.6")
 }
 ```
 

@@ -1,3 +1,7 @@
+## 0.6.6
+> Published 31 July 2025
+- update dependencies
+
 ## 0.6.5
 > Published 02 May 2025
 - support Novita AI API

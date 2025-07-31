@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 group = "io.github.bay73"
-version = "0.6.5"
+version = "0.6.6"
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
